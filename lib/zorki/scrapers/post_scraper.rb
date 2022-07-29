@@ -13,8 +13,6 @@ module Zorki
       # - Number of likes *
       # - Hashtags
 
-      @@logger.debug "DSLHFLSFHJSDILFHOISOIFHSOFH"
-
       Capybara.app_host = "https://instagram.com"
 
       # video slideshows https://www.instagram.com/p/CY7KxwYOFBS/?utm_source=ig_embed&utm_campaign=loading
@@ -49,6 +47,7 @@ module Zorki
       date = DateTime.strptime(graphql_object["items"][0]["taken_at"].to_s, "%s")
       number_of_likes = graphql_object["items"][0]["like_count"]
       username = graphql_object["items"][0]["caption"]["user"]["username"]
+      screenshot_file = save_screenshot("/tmp/#{SecureRandom.uuid}.png")
       # This has to run last since it switches pages
       user = User.lookup([username]).first
 
@@ -56,6 +55,7 @@ module Zorki
         images: images,
         video: video,
         video_preview_image: video_preview_image,
+        screenshot_file: screenshot_file,
         text: text,
         date: date,
         number_of_likes: number_of_likes,

@@ -27,6 +27,7 @@ class PostTest < Minitest::Test
     assert_equal post.id, "CNJJM2elXQ0"
     assert_nil post.video_file_name
     assert_nil post.video_preview_image
+    assert_not_nil post.screenshot_file
   end
 
   def test_a_post_marked_as_misinfo_works_still
@@ -43,6 +44,7 @@ class PostTest < Minitest::Test
     post = Zorki::Post.lookup(["Cak2RfYhqvE"]).first
     assert_not_nil post.video_file_name
     assert_not_nil post.video_preview_image
+    assert_not_nil post.screenshot_file
   end
 
   def test_a_post_has_been_removed

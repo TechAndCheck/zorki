@@ -19,19 +19,21 @@ module Zorki
                 :number_of_likes,
                 :user,
                 :video_file_name,
-                :video_preview_image
+                :video_preview_image,
+                :screenshot_file
 
   private
 
-    def initialize(hash = {})
-      @id = hash[:id]
-      @image_file_names = hash[:images]
-      @text = hash[:text]
-      @date = hash[:date]
-      @number_of_likes = hash[:number_of_likes]
-      @user = hash[:user]
-      @video_file_name = hash[:video]
-      @video_preview_image = hash[:video_preview_image]
+    def initialize(post_hash = {})
+      @id = post_hash[:id]
+      @image_file_names = post_hash[:images]
+      @text = post_hash[:text]
+      @date = post_hash[:date]
+      @number_of_likes = post_hash[:number_of_likes]
+      @user = post_hash[:user]
+      @video_file_name = post_hash[:video]
+      @video_preview_image = post_hash[:video_preview_image]
+      @screenshot_file = post_hash[:screenshot_file]
     end
 
     class << self
