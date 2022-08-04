@@ -30,8 +30,8 @@ module Zorki
     include Capybara::DSL
 
     @@logger = Logger.new(STDOUT)
-    @@logger.level = Logger::WARN
-
+    @@logger.level = Logger::DEBUG
+    @@logger.datetime_format = "%Y-%m-%d %H:%M:%S"
     @@session_id = nil
 
     def initialize
@@ -48,9 +48,6 @@ module Zorki
       # the one we want, and then moves on.
       response_body = nil
 
-      # @@session_id = page.driver.browser.instance_variable_get(:@bridge).session_id if @@session_id.nil?
-      # page.driver.browser.instance_variable_get(:@bridge).instance_variable_set(:@session_id, @@session_id)
-
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
         continue.call(request) && next unless request.url.include?(subpage_search)
@@ -64,6 +61,7 @@ module Zorki
         # Eat them
       end
 
+      @@logger.debug "#{subpage_search} request intercepted. About to visit URL #{url}"
       # Now that the intercept is set up, we visit the page we want
       visit(url)
       # We wait until the correct intercept is processed or we've waited 60 seconds
@@ -94,12 +92,16 @@ module Zorki
       visit ("https://instagram.com") unless page.driver.browser.current_url.include? "instagram.com"
 
       # We don't have to login if we already are
+      @@logger.debug "Checking if we're on instagram. Max wait 10s"
       begin
-        return if find_field("Search").present?
+        return if find_field("Search", wait: 10).present?
       rescue Capybara::ElementNotFound; end
 
+      # Go to the home page
+      visit("https://instagram.com")
       # Check if we're redirected to a login page, if we aren't we're already logged in
-      return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button')
+
+      return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button', wait: 10)
 
       loop_count = 0
       while loop_count < 5 do

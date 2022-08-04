@@ -41,8 +41,8 @@ module Zorki
 
         def scrape(ids)
           ids.map do |id|
-            user_hash = Zorki::PostScraper.new.parse(id)
-            Post.new(user_hash)
+            post_hash = Zorki::PostScraper.new.parse(id)
+            Post.new(post_hash)
           end
         end
     end
