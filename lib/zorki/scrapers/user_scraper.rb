@@ -18,7 +18,7 @@ module Zorki
       # - *Profile image
       login
 
-      graphql_script = get_content_of_subpage_from_url("/#{username}/", "?username=")
+      graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "?username=")
       user = graphql_script["data"]["user"]
 
       # Get the username (to verify we're on the right page here)

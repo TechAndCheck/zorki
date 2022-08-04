@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # require_relative "user_scraper"
+require "capybara"
 require "capybara/dsl"
 require "dotenv/load"
 require "oj"
@@ -34,8 +35,8 @@ module Zorki
     include Capybara::DSL
 
     @@logger = Logger.new(STDOUT)
-    @@logger.level = Logger::WARN
-
+    @@logger.level = Logger::DEBUG
+    @@logger.datetime_format = "%Y-%m-%d %H:%M:%S"
     @@session_id = nil
 
     def initialize
@@ -52,10 +53,11 @@ module Zorki
       # Instead it comes in as part of a subsequent call. This intercepts all calls, checks if it's
       # the one we want, and then moves on.
       response_body = nil
+      # byebug
+      # @@session_id = page.driver.browser.instance_variable_get(:@bridge).session_id if @@session_id.nil?
+      # page.driver.browser.instance_variable_get(:@bridge).instance_variable_set(:@session_id, @@session_id)
 
-      @@session_id = page.driver.browser.instance_variable_get(:@bridge).session_id if @@session_id.nil?
-      page.driver.browser.instance_variable_get(:@bridge).instance_variable_set(:@session_id, @@session_id)
-
+      @@logger.debug "Ready to intercept requests"
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
         continue.call(request) && next unless request.url.include?(subpage_search)
@@ -73,7 +75,9 @@ module Zorki
         # Eat them
       end
 
+      @@logger.debug "#{subpage_search} request intercepted. About to visit URL #{url}"
       # Now that the intercept is set up, we visit the page we want
+      # byebug
       visit(url)
       # We wait until the correct intercept is processed or we've waited 60 seconds
       count = 0
@@ -94,15 +98,18 @@ module Zorki
     def login
       # Check if we're on a Instagram page already, if not visit it.
       # We don't have to login if we already are
+      @@logger.debug "Checking if we're on instagram. Max wait 10s"
       begin
-        return if find_field("Search").present?
+        return if find_field("Search", wait: 10).present?
       rescue Capybara::ElementNotFound; end
 
       # Go to the home page
       visit("https://instagram.com")
       # Check if we're redirected to a login page, if we aren't we're already logged in
-      return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button')
+      @@logger.debug "Checking for login xpath. Max wait 10s"
+      return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button', wait: 10)
 
+      @@logger.debug "sleeping rand*10"
       sleep(rand * 10)
 
       loop_count = 0

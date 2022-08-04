@@ -17,10 +17,12 @@ module Zorki
 
       # video slideshows https://www.instagram.com/p/CY7KxwYOFBS/?utm_source=ig_embed&utm_campaign=loading
       login
-      graphql_object = get_content_of_subpage_from_url("/p/#{id}/", "/info")
+      @@logger.debug "logged in"
+      graphql_object = get_content_of_subpage_from_url("https://instagram.com/p/#{id}/", "/info")
 
       # We need to see if this is a single image post or a slideshow. We do that
       # by looking for a single image, if it's not there, we assume the alternative.
+      @@logger.debug "Parsing GraphQL object"
       unless graphql_object["items"][0].has_key?("video_versions")
         # Check if there is a slideshow or not
         unless graphql_object["items"][0].has_key?("carousel_media")
@@ -50,6 +52,7 @@ module Zorki
       screenshot_file = save_screenshot("/tmp/#{SecureRandom.uuid}.png")
       # This has to run last since it switches pages
       user = User.lookup([username]).first
+      page.quit
 
       {
         images: images,
