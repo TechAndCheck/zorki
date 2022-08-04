@@ -18,6 +18,12 @@ module Zorki
     end
   end
 
+  class ContentUnavailableError < Error
+    def initialize(msg = "Zorki could not find content requested")
+      super
+    end
+  end
+
   class RetryableError < Error; end
 
   class ImageRequestTimedOutError < RetryableError
