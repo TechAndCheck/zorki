@@ -53,9 +53,6 @@ module Zorki
       # Instead it comes in as part of a subsequent call. This intercepts all calls, checks if it's
       # the one we want, and then moves on.
       response_body = nil
-      # byebug
-      # @@session_id = page.driver.browser.instance_variable_get(:@bridge).session_id if @@session_id.nil?
-      # page.driver.browser.instance_variable_get(:@bridge).instance_variable_set(:@session_id, @@session_id)
 
       @@logger.debug "Ready to intercept requests"
       page.driver.browser.intercept do |request, &continue|
