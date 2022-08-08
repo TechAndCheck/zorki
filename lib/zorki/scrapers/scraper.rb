@@ -18,15 +18,14 @@ options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--user-data-dir=/tmp/tarun")
 
 
-Capybara.register_driver :chrome do |app|
+Capybara.register_driver :chrome_zorki do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
-  client.read_timeout = 10  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
+  client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
   Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: options, http_client: client)
 end
 
-# Capybara.default_driver = :selenium_chrome
-Capybara.default_max_wait_time = 15
 Capybara.threadsafe = true
+Capybara.default_max_wait_time = 15
 Capybara.reuse_server = true
 Capybara.app_host = "https://instagram.com"
 
@@ -40,7 +39,7 @@ module Zorki
     @@session_id = nil
 
     def initialize
-      Capybara.default_driver = :chrome
+      Capybara.default_driver = :chrome_zorki
       Capybara.app_host = "https://instagram.com"
     end
 
@@ -60,12 +59,8 @@ module Zorki
         continue.call(request) && next unless request.url.include?(subpage_search)
 
         continue.call(request) do |response|
-          # debugger
-          # Check if 1. it's the call we're looking for, and 2. not a CORS prefetch
-          if request.url.include?(subpage_search) && response.body.present?
-            # Setting this will finish up the loop we start below
-            response_body = response.body
-          end
+          # Check if not a CORS prefetch and finish up if not
+          response_body = response.body if response.body.present?
         end
       rescue Selenium::WebDriver::Error::WebDriverError
         @@logger.debug "(INFO) Error receiving #{request.url}"
