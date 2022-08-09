@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# require_relative "user_scraper"
 require "capybara/dsl"
 require "dotenv/load"
 require "oj"
@@ -68,10 +67,10 @@ module Zorki
       # Now that the intercept is set up, we visit the page we want
       visit(url)
       # We wait until the correct intercept is processed or we've waited 60 seconds
-      count = 0
-      while response_body.nil? && count < 60
-        sleep(1)
-        count += 1
+      # count = 0
+      start_time = Time.now
+      while response_body.nil? && (Time.now - start_time) < 60
+        sleep(0.1)
       end
 
       # debugger
