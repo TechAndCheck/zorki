@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # require_relative "user_scraper"
-require "capybara"
 require "capybara/dsl"
 require "dotenv/load"
 require "oj"
@@ -27,7 +26,6 @@ end
 Capybara.threadsafe = true
 Capybara.default_max_wait_time = 15
 Capybara.reuse_server = true
-Capybara.app_host = "https://instagram.com"
 
 module Zorki
   class Scraper
@@ -40,7 +38,6 @@ module Zorki
 
     def initialize
       Capybara.default_driver = :chrome_zorki
-      Capybara.app_host = "https://instagram.com"
     end
 
     # Instagram uses GraphQL (like most of Facebook I think), and returns an object that actually
