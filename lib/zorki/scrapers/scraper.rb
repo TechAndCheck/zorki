@@ -69,7 +69,6 @@ module Zorki
 
       @@logger.debug "#{subpage_search} request intercepted. About to visit URL #{url}"
       # Now that the intercept is set up, we visit the page we want
-      # byebug
       visit(url)
       # We wait until the correct intercept is processed or we've waited 60 seconds
       count = 0
@@ -95,6 +94,7 @@ module Zorki
         return if find_field("Search", wait: 10).present?
       rescue Capybara::ElementNotFound; end
 
+      @@logger.debug "Visiting instagram :)"
       # Go to the home page
       visit("https://instagram.com")
       # Check if we're redirected to a login page, if we aren't we're already logged in
