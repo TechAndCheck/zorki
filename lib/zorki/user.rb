@@ -25,17 +25,17 @@ module Zorki
 
   private
 
-    def initialize(hash = {})
-      @name = hash[:name]
-      @username = hash[:username]
-      @number_of_posts = hash[:number_of_posts]
-      @number_of_followers = hash[:number_of_followers]
-      @number_of_following = hash[:number_of_following]
-      @verified = hash[:verified]
-      @profile = hash[:profile]
-      @profile_link = hash[:profile_link]
-      @profile_image = hash[:profile_image]
-      @profile_image_url = hash[:profile_image_url]
+    def initialize(user_hash = {})
+      @name = user_hash[:name]
+      @username = user_hash[:username]
+      @number_of_posts = user_hash[:number_of_posts]
+      @number_of_followers = user_hash[:number_of_followers]
+      @number_of_following = user_hash[:number_of_following]
+      @verified = user_hash[:verified]
+      @profile = user_hash[:profile]
+      @profile_link = user_hash[:profile_link]
+      @profile_image = user_hash[:profile_image]
+      @profile_image_url = user_hash[:profile_image_url]
     end
 
     class << self
