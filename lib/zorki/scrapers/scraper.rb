@@ -36,7 +36,7 @@ module Zorki
     @@session_id = nil
 
     def initialize
-      Capybara.default_driver = :chrome_zorki
+      Capybara.current_driver = :chrome_zorki
     end
 
     # Instagram uses GraphQL (like most of Facebook I think), and returns an object that actually
