@@ -73,7 +73,6 @@ module Zorki
         sleep(0.1)
       end
 
-      # debugger
       # Remove this callback so other requests don't go through the same thing
       page.driver.browser.devtools.callbacks["Fetch.requestPaused"] = []
 
@@ -97,13 +96,9 @@ module Zorki
       @@logger.debug "Checking for login xpath. Max wait 10s"
       return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button', wait: 10)
 
-      @@logger.debug "sleeping rand*10"
-      sleep(rand * 10)
-
       loop_count = 0
       while loop_count < 5 do
         fill_in("username", with: ENV["INSTAGRAM_USER_NAME"])
-        sleep(rand * 10)
         fill_in("password", with: ENV["INSTAGRAM_PASSWORD"])
         click_on("Log In")
 
