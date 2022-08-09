@@ -52,9 +52,6 @@ module Zorki
       screenshot_file = save_screenshot("/tmp/#{SecureRandom.uuid}.png")
       # This has to run last since it switches pages
       user = User.lookup([username]).first
-      @@logger.debug "Forki closing chrome session"
-      page.quit
-      @@logger.debug "Forki closed chrome session"
 
       {
         images: images,
