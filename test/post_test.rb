@@ -36,8 +36,8 @@ class PostTest < Minitest::Test
   end
 
   def test_another_post_works
-    post = Zorki::Post.lookup(["CS7npabI8IN"]).first
-    assert_equal post.image_file_names.count, 1
+    post = Zorki::Post.lookup(["CS17kK3n5-J"]).first
+    assert_not_nil post.video_file_name
   end
 
   def test_a_video_post_returns_properly_when_scraped
@@ -45,5 +45,11 @@ class PostTest < Minitest::Test
     assert_not_nil post.video_file_name
     assert_not_nil post.video_preview_image
     assert_not_nil post.screenshot_file
+  end
+
+  def test_a_post_has_been_removed
+    assert_raises Zorki::ContentUnavailableError do
+      Zorki::Post.lookup(["sfhslsfjdls"])
+    end
   end
 end

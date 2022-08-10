@@ -15,7 +15,6 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--user-data-dir=/tmp/tarun")
 
-
 Capybara.register_driver :chrome_zorki do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
@@ -76,13 +75,20 @@ module Zorki
       # Remove this callback so other requests don't go through the same thing
       page.driver.browser.devtools.callbacks["Fetch.requestPaused"] = []
 
+      raise ContentUnavailableError if response_body.nil?
+
       Oj.load(response_body)
     end
 
   private
 
     def login
+      # Reset the sessions so that there's nothing laying around
+      page.quit
+
       # Check if we're on a Instagram page already, if not visit it.
+      visit ("https://instagram.com") unless page.driver.browser.current_url.include? "instagram.com"
+
       # We don't have to login if we already are
       @@logger.debug "Checking if we're on instagram. Max wait 10s"
       begin
@@ -93,6 +99,7 @@ module Zorki
       # Go to the home page
       visit("https://instagram.com")
       # Check if we're redirected to a login page, if we aren't we're already logged in
+
       @@logger.debug "Checking for login xpath. Max wait 10s"
       return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button', wait: 10)
 
