@@ -1,6 +1,8 @@
 require "logger"
 require "selenium-webdriver"
 
+# Design taken from https://blog.appsignal.com/2021/08/24/responsible-monkeypatching-in-ruby.html
+
 module SeleniumMonkeypatch
   class << self
     @@logger = Logger.new(STDOUT)
