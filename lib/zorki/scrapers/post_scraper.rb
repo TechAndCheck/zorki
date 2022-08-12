@@ -52,6 +52,7 @@ module Zorki
       screenshot_file = save_screenshot("/tmp/#{SecureRandom.uuid}.png")
       # This has to run last since it switches pages
       user = User.lookup([username]).first
+      page.quit
 
       {
         images: images,

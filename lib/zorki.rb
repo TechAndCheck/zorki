@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "zorki/version"
+require_relative "zorki/monkeypatch"
 
 # Representative objects we create
 require_relative "zorki/user"
