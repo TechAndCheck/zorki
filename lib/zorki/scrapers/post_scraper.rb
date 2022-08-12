@@ -21,7 +21,6 @@ module Zorki
 
       # We need to see if this is a single image post or a slideshow. We do that
       # by looking for a single image, if it's not there, we assume the alternative.
-      @@logger.debug "Parsing GraphQL object"
       unless graphql_object["items"][0].has_key?("video_versions")
         # Check if there is a slideshow or not
         unless graphql_object["items"][0].has_key?("carousel_media")
@@ -51,6 +50,7 @@ module Zorki
       screenshot_file = save_screenshot("/tmp/#{SecureRandom.uuid}.png")
       # This has to run last since it switches pages
       user = User.lookup([username]).first
+      page.quit
 
       {
         images: images,

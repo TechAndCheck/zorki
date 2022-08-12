@@ -30,7 +30,7 @@ module Zorki
     include Capybara::DSL
 
     @@logger = Logger.new(STDOUT)
-    @@logger.level = Logger::DEBUG
+    @@logger.level = Logger::WARN
     @@logger.datetime_format = "%Y-%m-%d %H:%M:%S"
     @@session_id = nil
 
@@ -57,11 +57,9 @@ module Zorki
           response_body = response.body if response.body.present?
         end
       rescue Selenium::WebDriver::Error::WebDriverError
-        @@logger.debug "(INFO) Error receiving #{request.url}"
         # Eat them
       end
 
-      @@logger.debug "#{subpage_search} request intercepted. About to visit URL #{url}"
       # Now that the intercept is set up, we visit the page we want
       visit(url)
       # We wait until the correct intercept is processed or we've waited 60 seconds
@@ -69,10 +67,6 @@ module Zorki
       while response_body.nil? && (Time.now - start_time) < 60
         sleep(0.1)
       end
-
-      # Instagram loading is weird, however, by this point we already have what we're looking for
-      # so we bail out quick. This is the best method I've found.
-      page.quit
 
       # Remove this callback so other requests don't go through the same thing
       page.driver.browser.devtools.callbacks["Fetch.requestPaused"] = []
@@ -92,17 +86,14 @@ module Zorki
       visit ("https://instagram.com") unless page.driver.browser.current_url.include? "instagram.com"
 
       # We don't have to login if we already are
-      @@logger.debug "Checking if we're on instagram. Max wait 10s"
       begin
-        return if find_field("Search", wait: 10).present?
+        return if find_field("Search").present?
       rescue Capybara::ElementNotFound; end
 
-      # Go to the home page
-      visit("https://instagram.com")
       # Check if we're redirected to a login page, if we aren't we're already logged in
+      return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button')
 
-      return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button', wait: 10)
-
+      # Try to log in
       loop_count = 0
       while loop_count < 5 do
         fill_in("username", with: ENV["INSTAGRAM_USER_NAME"])
@@ -111,7 +102,6 @@ module Zorki
 
         break unless has_css?('p[data-testid="login-error-message"')
         loop_count += 1
-        @@logger.debug("Error logging into Instagram, trying again")
         sleep(rand * 30.4)
       end
 
