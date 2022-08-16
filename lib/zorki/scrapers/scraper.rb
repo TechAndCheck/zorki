@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "capybara/dsl"
-require "capybara-screenshot"
 require "dotenv/load"
 require "oj"
 require "selenium-webdriver"
