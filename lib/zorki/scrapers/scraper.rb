@@ -74,9 +74,6 @@ module Zorki
         sleep(0.1)
       end
 
-      # Remove this callback so other requests don't go through the same thing
-      # page.driver.browser.devtools.callbacks["Fetch.requestPaused"] = []
-
       raise ContentUnavailableError if response_body.nil?
 
       Oj.load(response_body)

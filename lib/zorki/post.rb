@@ -5,10 +5,6 @@ module Zorki
     def self.lookup(ids = [])
       # If a single id is passed in we make it the appropriate array
       ids = [ids] unless ids.kind_of?(Array)
-
-      # Check that the ids are at least real ids
-      # ids.each { |id| raise Birdsong::Error if !/\A\d+\z/.match(id) }
-
       self.scrape(ids)
     end
 
