@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "capybara/dsl"
+require "capybara-screenshot"
 require "dotenv/load"
 require "oj"
 require "selenium-webdriver"
@@ -15,7 +16,12 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--user-data-dir=/tmp/tarun")
 
-Capybara.register_driver :chrome_zorki do |app|
+Capybara::Screenshot.autosave_on_failure = false
+# Capybara::Screenshot.register_filename_prefix_formatter() do |example|
+#   "#{Zorki.temp_storage_location}/#{SecureRandom.uuid}_screenshot.png"
+# end
+
+Capybara.register_driver :selenium do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
   Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: options, http_client: client)
@@ -35,7 +41,7 @@ module Zorki
     @@session_id = nil
 
     def initialize
-      Capybara.current_driver = :chrome_zorki
+      Capybara.current_driver = :selenium
     end
 
     # Instagram uses GraphQL (like most of Facebook I think), and returns an object that actually
@@ -69,7 +75,7 @@ module Zorki
       end
 
       # Remove this callback so other requests don't go through the same thing
-      page.driver.browser.devtools.callbacks["Fetch.requestPaused"] = []
+      # page.driver.browser.devtools.callbacks["Fetch.requestPaused"] = []
 
       raise ContentUnavailableError if response_body.nil?
 

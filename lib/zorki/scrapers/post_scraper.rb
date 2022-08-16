@@ -47,7 +47,8 @@ module Zorki
       date = DateTime.strptime(graphql_object["items"][0]["taken_at"].to_s, "%s")
       number_of_likes = graphql_object["items"][0]["like_count"]
       username = graphql_object["items"][0]["caption"]["user"]["username"]
-      screenshot_file = save_screenshot("/tmp/#{SecureRandom.uuid}.png")
+      screenshot_file = save_screenshot("#{Zorki.temp_storage_location}/#{SecureRandom.uuid}_screenshot.png")
+
       # This has to run last since it switches pages
       user = User.lookup([username]).first
       page.quit
