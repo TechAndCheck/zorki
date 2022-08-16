@@ -47,9 +47,12 @@ module Zorki
       date = DateTime.strptime(graphql_object["items"][0]["taken_at"].to_s, "%s")
       number_of_likes = graphql_object["items"][0]["like_count"]
       username = graphql_object["items"][0]["caption"]["user"]["username"]
-      screenshot_file = save_screenshot("/tmp/#{SecureRandom.uuid}.png")
+
+      screenshot_file = take_screenshot()
+
       # This has to run last since it switches pages
       user = User.lookup([username]).first
+      page.quit
 
       {
         images: images,
@@ -62,6 +65,20 @@ module Zorki
         user: user,
         id: id
       }
+    end
+
+    def take_screenshot
+      # First check if a post has a fact check overlay, if so, clear it.
+      # The only issue is that this can take *awhile* to search. Not sure what to do about that
+      # since it's Instagram's fault for having such a fucked up obfuscated hierarchy
+      begin
+        find_button("See Post").click
+      rescue Capybara::ElementNotFound
+        # Do nothing if the element is not found
+      end
+
+      # Take the screenshot and return it
+      save_screenshot("#{Zorki.temp_storage_location}/#{SecureRandom.uuid}_screenshot.png")
     end
   end
 end

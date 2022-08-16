@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "capybara/dsl"
+require "capybara-screenshot"
 require "dotenv/load"
 require "oj"
 require "selenium-webdriver"
@@ -15,7 +16,12 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--user-data-dir=/tmp/tarun")
 
-Capybara.register_driver :chrome_zorki do |app|
+Capybara::Screenshot.autosave_on_failure = false
+# Capybara::Screenshot.register_filename_prefix_formatter() do |example|
+#   "#{Zorki.temp_storage_location}/#{SecureRandom.uuid}_screenshot.png"
+# end
+
+Capybara.register_driver :selenium do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
   Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: options, http_client: client)
@@ -31,11 +37,11 @@ module Zorki
 
     @@logger = Logger.new(STDOUT)
     @@logger.level = Logger::WARN
-
+    @@logger.datetime_format = "%Y-%m-%d %H:%M:%S"
     @@session_id = nil
 
     def initialize
-      Capybara.current_driver = :chrome_zorki
+      Capybara.current_driver = :selenium
     end
 
     # Instagram uses GraphQL (like most of Facebook I think), and returns an object that actually
@@ -48,9 +54,6 @@ module Zorki
       # the one we want, and then moves on.
       response_body = nil
 
-      # @@session_id = page.driver.browser.instance_variable_get(:@bridge).session_id if @@session_id.nil?
-      # page.driver.browser.instance_variable_get(:@bridge).instance_variable_set(:@session_id, @@session_id)
-
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
         continue.call(request) && next unless request.url.include?(subpage_search)
@@ -60,7 +63,6 @@ module Zorki
           response_body = response.body if response.body.present?
         end
       rescue Selenium::WebDriver::Error::WebDriverError
-        @@logger.debug "(INFO) Error receiving #{request.url}"
         # Eat them
       end
 
@@ -71,13 +73,6 @@ module Zorki
       while response_body.nil? && (Time.now - start_time) < 60
         sleep(0.1)
       end
-
-      # Instagram loading is weird, however, by this point we already have what we're looking for
-      # so we bail out quick. This is the best method I've found.
-      page.quit
-
-      # Remove this callback so other requests don't go through the same thing
-      page.driver.browser.devtools.callbacks["Fetch.requestPaused"] = []
 
       raise ContentUnavailableError if response_body.nil?
 
@@ -101,6 +96,7 @@ module Zorki
       # Check if we're redirected to a login page, if we aren't we're already logged in
       return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button')
 
+      # Try to log in
       loop_count = 0
       while loop_count < 5 do
         fill_in("username", with: ENV["INSTAGRAM_USER_NAME"])
@@ -109,7 +105,6 @@ module Zorki
 
         break unless has_css?('p[data-testid="login-error-message"')
         loop_count += 1
-        @@logger.debug("Error logging into Instagram, trying again")
         sleep(rand * 30.4)
       end
 
