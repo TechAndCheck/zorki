@@ -15,11 +15,6 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--user-data-dir=/tmp/tarun")
 
-Capybara::Screenshot.autosave_on_failure = false
-# Capybara::Screenshot.register_filename_prefix_formatter() do |example|
-#   "#{Zorki.temp_storage_location}/#{SecureRandom.uuid}_screenshot.png"
-# end
-
 Capybara.register_driver :selenium do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
