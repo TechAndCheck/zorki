@@ -78,7 +78,7 @@ module Zorki
       end
 
       # Take the screenshot and return it
-      save_screenshot("#{Zorki.temp_storage_location}/#{SecureRandom.uuid}_screenshot.png")
+      save_screenshot("#{Zorki.temp_storage_location}/instagram_screenshot_#{SecureRandom.uuid}.png")
     end
   end
 end
