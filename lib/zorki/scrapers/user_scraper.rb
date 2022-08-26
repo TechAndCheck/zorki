@@ -18,7 +18,13 @@ module Zorki
       # - *Profile image
       login
 
-      graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "?username=")
+      url = "https://instagram.com/#{username}/"
+      if check_if_content_preloaded?(url)
+        graphql_script = find_graphql_script
+      else
+        graphql_script = get_content_of_subpage_from_url(url, "?username=")
+      end
+
       user = graphql_script["data"]["user"]
 
       # Get the username (to verify we're on the right page here)
@@ -38,6 +44,13 @@ module Zorki
         profile_image: Zorki.retrieve_media(profile_image_url),
         profile_image_url: profile_image_url
       }
+    end
+
+  private
+
+    def check_if_content_preloaded?(url)
+      visit(url)
+      page.html.include? "followed_by_viewer"
     end
   end
 end
