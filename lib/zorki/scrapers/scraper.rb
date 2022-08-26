@@ -82,8 +82,7 @@ module Zorki
       # We search for a quoted term to find a JSON string that uses "graphql" as a key
       # graphql_script = scripts.find { |s| s.text(:all).include?('"graphql"') }
       # Let's look around if you can't find it in the previous line
-      graphql_script = scripts.find { |s| s.text(:all).include?("items") }
-      graphql_script = scripts.find { |s| s.text(:all).include?("graphql") } if graphql_script.nil?
+      graphql_script = scripts.find { |s| s.text(:all).include?("followed_by_viewer") }
 
       graphql_text = graphql_script.text(:all)
 
