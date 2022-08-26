@@ -73,6 +73,43 @@ module Zorki
       Oj.load(response_body)
     end
 
+    # Instagram uses GraphQL (like most of Facebook I think), and returns an object that actually
+    # is used to seed the page. We can just parse this for most things.
+    #
+    # @returns Hash a ruby hash of the JSON data
+    def find_graphql_script
+      scripts = all("script", visible: false)
+      # We search for a quoted term to find a JSON string that uses "graphql" as a key
+      # graphql_script = scripts.find { |s| s.text(:all).include?('"graphql"') }
+      # Let's look around if you can't find it in the previous line
+      graphql_script = scripts.find { |s| s.text(:all).include?("items") }
+      graphql_script = scripts.find { |s| s.text(:all).include?("graphql") } if graphql_script.nil?
+
+      graphql_text = graphql_script.text(:all)
+
+      # Clean up the javascript so we have pure JSON
+      # We do this by scanning until we get to the first `{`, taking the subindex, then doing the
+      # same backwards to find `}`
+      index = graphql_text.index("{")
+      # graphql_text = graphql_text[index...]
+
+      # We now do it again, due to some javascript being tossed in
+      index = graphql_text.index("{", index + 1)
+      index = graphql_text.index("{", index + 1)
+
+      graphql_text = graphql_text[index...]
+
+      graphql_text = graphql_text.reverse
+      index = graphql_text.index("}")
+      index = graphql_text.index("}", index + 1)
+      index = graphql_text.index("}", index + 1)
+
+      graphql_text = graphql_text[index..] # this is not inclusive on purpose
+      graphql_text = graphql_text.reverse
+
+      Oj.load(graphql_text)
+    end
+
   private
 
     def login
