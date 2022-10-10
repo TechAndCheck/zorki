@@ -43,10 +43,16 @@ module Zorki
         video_preview_image = Zorki.retrieve_media(video_preview_image_url)
       end
 
-      text = graphql_object["items"][0]["caption"]["text"]
+      unless graphql_object["items"][0]["caption"].nil?
+        text = graphql_object["items"][0]["caption"]["text"]
+        username = graphql_object["items"][0]["caption"]["user"]["username"]
+      else
+        text = ""
+        username = graphql_object["items"][0]["user"]["username"]
+      end
+
       date = DateTime.strptime(graphql_object["items"][0]["taken_at"].to_s, "%s")
       number_of_likes = graphql_object["items"][0]["like_count"]
-      username = graphql_object["items"][0]["caption"]["user"]["username"]
 
       screenshot_file = take_screenshot()
 
