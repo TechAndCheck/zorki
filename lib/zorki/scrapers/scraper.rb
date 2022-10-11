@@ -6,16 +6,17 @@ require "oj"
 require "selenium-webdriver"
 require "logger"
 require "debug"
+require "securerandom"
 
 # 2022-06-07 14:15:23 WARN Selenium [DEPRECATION] [:browser_options] :options as a parameter for driver initialization is deprecated. Use :capabilities with an Array of value capabilities/options if necessary instead.
 
 options = Selenium::WebDriver::Chrome::Options.new
-options.add_argument("--window-size=1400,1400")
+options.add_argument("--window-size=1500,1500")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--user-data-dir=/tmp/tarun")
+options.add_argument("--user-data-dir=/tmp/tarun_zorki_#{SecureRandom.uuid}")
 
-Capybara.register_driver :selenium do |app|
+Capybara.register_driver :selenium_zorki do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
   Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: options, http_client: client)
@@ -35,7 +36,7 @@ module Zorki
     @@session_id = nil
 
     def initialize
-      Capybara.current_driver = :selenium
+      Capybara.default_driver = :selenium_zorki
     end
 
     # Instagram uses GraphQL (like most of Facebook I think), and returns an object that actually
@@ -75,6 +76,26 @@ module Zorki
 
   private
 
+    ##########
+    # Set the session to use a new user folder in the options!
+    # #####################
+    def reset_selenium
+      options = Selenium::WebDriver::Chrome::Options.new
+      options.add_argument("--window-size=1500,1500")
+      options.add_argument("--no-sandbox")
+      options.add_argument("--disable-dev-shm-usage")
+      options.add_argument("--user-data-dir=/tmp/tarun_#{SecureRandom.uuid}")
+      # options.add_argument("--user-data-dir=/tmp/tarun")
+
+      Capybara.register_driver :selenium do |app|
+        client = Selenium::WebDriver::Remote::Http::Default.new
+        client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
+        Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: options, http_client: client)
+      end
+
+      Capybara.current_driver = :selenium
+    end
+
     def login
       # Reset the sessions so that there's nothing laying around
       page.quit
@@ -84,7 +105,7 @@ module Zorki
 
       # We don't have to login if we already are
       begin
-        return if find_field("Search").present?
+        return if find_field("Search", wait: 10).present?
       rescue Capybara::ElementNotFound; end
 
       # Check if we're redirected to a login page, if we aren't we're already logged in
@@ -95,18 +116,21 @@ module Zorki
       while loop_count < 5 do
         fill_in("username", with: ENV["INSTAGRAM_USER_NAME"])
         fill_in("password", with: ENV["INSTAGRAM_PASSWORD"])
-        click_on("Log In")
 
-        break unless has_css?('p[data-testid="login-error-message"')
+        click_on("Log In") # Note: "Log in" (lowercase `in`) instead redirects to Facebook's login page
+
+        break unless has_css?('p[data-testid="login-error-message"', wait: 10)
         loop_count += 1
-        sleep(rand * 30.4)
+        sleep(rand * 10.3)
       end
 
       # Sometimes Instagram just... doesn't let you log in
       raise "Instagram not accessible" if loop_count == 5
 
       # No we don't want to save our login credentials
-      click_on("Not Now")
+      begin
+        click_on("Save Info")
+      rescue Capybara::ElementNotFound; end
     end
 
     def fetch_image(url)
