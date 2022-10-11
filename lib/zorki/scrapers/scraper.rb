@@ -14,7 +14,7 @@ options = Selenium::WebDriver::Chrome::Options.new
 options.add_argument("--window-size=1500,1500")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--user-data-dir=/tmp/tarun_zork_#{SecureRandom.uuid}")
+options.add_argument("--user-data-dir=/tmp/tarun_zorki_#{SecureRandom.uuid}")
 
 Capybara.register_driver :selenium_zorki do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
@@ -37,7 +37,6 @@ module Zorki
 
     def initialize
       Capybara.default_driver = :selenium_zorki
-      # reset_selenium
     end
 
     # Instagram uses GraphQL (like most of Facebook I think), and returns an object that actually
