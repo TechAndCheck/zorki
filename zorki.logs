@@ -1,0 +1,300 @@
+I, [2022-08-30T16:45:02.755330 #62659]  INFO -- : /Users/christopher/Repositories/zorki/lib/zorki/monkeypatch.rb is monkeypatching Selenium::WebDriver::DevTools.send_cmd
+Run options: --seed 43507
+
+# Running:
+
+.E
+
+Error:
+UserTest#test_a_username_returns_properly_when_scraped:
+Errno::ECONNREFUSED: Failed to open TCP connection to localhost:4444 (Connection refused - connect(2) for 127.0.0.1:4444)
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `__connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:56:in `connect_internal'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:137:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:642:in `block in tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `each'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `foreach'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:632:in `tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:998:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:976:in `do_start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:971:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:67:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:61:in `http'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:118:in `response_for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:77:in `request'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/common.rb:59:in `call'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:625:in `execute'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:52:in `create_session'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:323:in `block in create_bridge'
+    <internal:kernel>:90:in `tap'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:321:in `create_bridge'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:74:in `initialize'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `new'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver.rb:89:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/capybara-3.37.1/lib/capybara/selenium/driver.rb:83:in `browser'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/scraper.rb:119:in `login'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/user_scraper.rb:19:in `parse'
+    /Users/christopher/Repositories/zorki/lib/zorki/user.rb:46:in `block in scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/user.rb:45:in `map'
+    /Users/christopher/Repositories/zorki/lib/zorki/user.rb:45:in `scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/user.rb:12:in `lookup'
+    /Users/christopher/Repositories/zorki/test/user_test.rb:9:in `test_a_username_returns_properly_when_scraped'
+
+rails test Users/christopher/Repositories/zorki/test/user_test.rb:8
+
+F
+
+Failure:
+PostTest#test_a_post_has_been_removed [/Users/christopher/Repositories/zorki/test/post_test.rb:51]:
+[Zorki::ContentUnavailableError] exception expected, not
+Class: <Errno::ECONNREFUSED>
+Message: <"Failed to open TCP connection to localhost:4444 (Connection refused - connect(2) for 127.0.0.1:4444)">
+---Backtrace---
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `__connect_nonblock'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `connect_nonblock'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:56:in `connect_internal'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:137:in `connect'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:642:in `block in tcp'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `each'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `foreach'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:632:in `tcp'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:998:in `connect'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:976:in `do_start'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:971:in `start'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:67:in `start'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:61:in `http'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:118:in `response_for'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:77:in `request'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/common.rb:59:in `call'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:625:in `execute'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:52:in `create_session'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:323:in `block in create_bridge'
+<internal:kernel>:90:in `tap'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:321:in `create_bridge'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:74:in `initialize'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `new'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `for'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver.rb:89:in `for'
+/Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/capybara-3.37.1/lib/capybara/selenium/driver.rb:83:in `browser'
+/Users/christopher/Repositories/zorki/lib/zorki/scrapers/scraper.rb:119:in `login'
+/Users/christopher/Repositories/zorki/lib/zorki/scrapers/post_scraper.rb:19:in `parse'
+/Users/christopher/Repositories/zorki/lib/zorki/post.rb:40:in `block in scrape'
+/Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `map'
+/Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `scrape'
+/Users/christopher/Repositories/zorki/lib/zorki/post.rb:8:in `lookup'
+/Users/christopher/Repositories/zorki/test/post_test.rb:52:in `block in test_a_post_has_been_removed'
+---------------
+
+rails test Users/christopher/Repositories/zorki/test/post_test.rb:50
+
+E
+
+Error:
+PostTest#test_a_post_marked_as_misinfo_works_still:
+Errno::ECONNREFUSED: Failed to open TCP connection to localhost:4444 (Connection refused - connect(2) for 127.0.0.1:4444)
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `__connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:56:in `connect_internal'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:137:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:642:in `block in tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `each'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `foreach'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:632:in `tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:998:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:976:in `do_start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:971:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:67:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:61:in `http'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:118:in `response_for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:77:in `request'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/common.rb:59:in `call'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:625:in `execute'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:52:in `create_session'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:323:in `block in create_bridge'
+    <internal:kernel>:90:in `tap'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:321:in `create_bridge'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:74:in `initialize'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `new'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver.rb:89:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/capybara-3.37.1/lib/capybara/selenium/driver.rb:83:in `browser'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/scraper.rb:119:in `login'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/post_scraper.rb:19:in `parse'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:40:in `block in scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `map'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:8:in `lookup'
+    /Users/christopher/Repositories/zorki/test/post_test.rb:34:in `test_a_post_marked_as_misinfo_works_still'
+
+rails test Users/christopher/Repositories/zorki/test/post_test.rb:33
+
+E
+
+Error:
+PostTest#test_a_single_image_post_returns_properly_when_scraped:
+Errno::ECONNREFUSED: Failed to open TCP connection to localhost:4444 (Connection refused - connect(2) for 127.0.0.1:4444)
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `__connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:56:in `connect_internal'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:137:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:642:in `block in tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `each'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `foreach'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:632:in `tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:998:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:976:in `do_start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:971:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:67:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:61:in `http'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:118:in `response_for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:77:in `request'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/common.rb:59:in `call'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:625:in `execute'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:52:in `create_session'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:323:in `block in create_bridge'
+    <internal:kernel>:90:in `tap'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:321:in `create_bridge'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:74:in `initialize'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `new'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver.rb:89:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/capybara-3.37.1/lib/capybara/selenium/driver.rb:83:in `browser'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/scraper.rb:119:in `login'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/post_scraper.rb:19:in `parse'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:40:in `block in scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `map'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:8:in `lookup'
+    /Users/christopher/Repositories/zorki/test/post_test.rb:15:in `test_a_single_image_post_returns_properly_when_scraped'
+
+rails test Users/christopher/Repositories/zorki/test/post_test.rb:14
+
+E
+
+Error:
+PostTest#test_a_slideshow_post_returns_properly_when_scraped:
+Errno::ECONNREFUSED: Failed to open TCP connection to localhost:4444 (Connection refused - connect(2) for 127.0.0.1:4444)
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `__connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:56:in `connect_internal'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:137:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:642:in `block in tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `each'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `foreach'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:632:in `tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:998:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:976:in `do_start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:971:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:67:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:61:in `http'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:118:in `response_for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:77:in `request'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/common.rb:59:in `call'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:625:in `execute'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:52:in `create_session'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:323:in `block in create_bridge'
+    <internal:kernel>:90:in `tap'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:321:in `create_bridge'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:74:in `initialize'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `new'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver.rb:89:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/capybara-3.37.1/lib/capybara/selenium/driver.rb:83:in `browser'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/scraper.rb:119:in `login'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/post_scraper.rb:19:in `parse'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:40:in `block in scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `map'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:8:in `lookup'
+    /Users/christopher/Repositories/zorki/test/post_test.rb:20:in `test_a_slideshow_post_returns_properly_when_scraped'
+
+rails test Users/christopher/Repositories/zorki/test/post_test.rb:19
+
+E
+
+Error:
+PostTest#test_a_video_post_returns_properly_when_scraped:
+Errno::ECONNREFUSED: Failed to open TCP connection to localhost:4444 (Connection refused - connect(2) for 127.0.0.1:4444)
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `__connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:56:in `connect_internal'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:137:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:642:in `block in tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `each'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `foreach'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:632:in `tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:998:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:976:in `do_start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:971:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:67:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:61:in `http'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:118:in `response_for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:77:in `request'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/common.rb:59:in `call'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:625:in `execute'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:52:in `create_session'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:323:in `block in create_bridge'
+    <internal:kernel>:90:in `tap'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:321:in `create_bridge'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:74:in `initialize'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `new'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver.rb:89:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/capybara-3.37.1/lib/capybara/selenium/driver.rb:83:in `browser'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/scraper.rb:119:in `login'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/post_scraper.rb:19:in `parse'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:40:in `block in scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `map'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:8:in `lookup'
+    /Users/christopher/Repositories/zorki/test/post_test.rb:44:in `test_a_video_post_returns_properly_when_scraped'
+
+rails test Users/christopher/Repositories/zorki/test/post_test.rb:43
+
+E
+
+Error:
+PostTest#test_another_post_works:
+Errno::ECONNREFUSED: Failed to open TCP connection to localhost:4444 (Connection refused - connect(2) for 127.0.0.1:4444)
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `__connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:1214:in `connect_nonblock'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:56:in `connect_internal'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:137:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:642:in `block in tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `each'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:227:in `foreach'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/socket.rb:632:in `tcp'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:998:in `connect'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:976:in `do_start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/3.1.0/net/http.rb:971:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:67:in `start'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:61:in `http'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:118:in `response_for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/default.rb:77:in `request'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/http/common.rb:59:in `call'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:625:in `execute'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/remote/bridge.rb:52:in `create_session'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:323:in `block in create_bridge'
+    <internal:kernel>:90:in `tap'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:321:in `create_bridge'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:74:in `initialize'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `new'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver/common/driver.rb:47:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/selenium-webdriver-4.4.0/lib/selenium/webdriver.rb:89:in `for'
+    /Users/christopher/.rbenv/versions/3.1.1/lib/ruby/gems/3.1.0/gems/capybara-3.37.1/lib/capybara/selenium/driver.rb:83:in `browser'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/scraper.rb:119:in `login'
+    /Users/christopher/Repositories/zorki/lib/zorki/scrapers/post_scraper.rb:19:in `parse'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:40:in `block in scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `map'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:39:in `scrape'
+    /Users/christopher/Repositories/zorki/lib/zorki/post.rb:8:in `lookup'
+    /Users/christopher/Repositories/zorki/test/post_test.rb:39:in `test_another_post_works'
+
+rails test Users/christopher/Repositories/zorki/test/post_test.rb:38
+
+
+
+Finished in 0.074277s, 107.7049 runs/s, 26.9262 assertions/s.
+8 runs, 2 assertions, 1 failures, 6 errors, 0 skips
