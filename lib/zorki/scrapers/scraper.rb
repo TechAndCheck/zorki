@@ -118,7 +118,7 @@ module Zorki
         fill_in("password", with: ENV["INSTAGRAM_PASSWORD"])
 
         begin
-          click_on("Log In") # Note: "Log in" (lowercase `in`) instead redirects to Facebook's login page
+          click_button("Log in", exact_text: true) # Note: "Log in" (lowercase `in`) instead redirects to Facebook's login page
         rescue Capybara::ElementNotFound; end # If we can't find it don't break horribly, just keep waiting
 
         break unless has_css?('p[data-testid="login-error-message"', wait: 10)
