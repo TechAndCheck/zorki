@@ -79,6 +79,7 @@ module Zorki
       # since it's Instagram's fault for having such a fucked up obfuscated hierarchy
       begin
         find_button("See Post").click
+        sleep(0.1)
       rescue Capybara::ElementNotFound
         # Do nothing if the element is not found
       end
