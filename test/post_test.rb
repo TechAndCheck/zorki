@@ -36,7 +36,7 @@ class PostTest < Minitest::Test
   end
 
   def test_another_post_works
-    post = Zorki::Post.lookup(["CS17kK3n5-J"]).first
+    post = Zorki::Post.lookup(["CmTc591tu0n"]).first
     assert_not_nil post.video_file_name
   end
 
