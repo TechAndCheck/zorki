@@ -10,16 +10,20 @@ require "securerandom"
 
 # 2022-06-07 14:15:23 WARN Selenium [DEPRECATION] [:browser_options] :options as a parameter for driver initialization is deprecated. Use :capabilities with an Array of value capabilities/options if necessary instead.
 
-options = Selenium::WebDriver::Chrome::Options.new
-options.add_argument("--window-size=1500,1500")
+options = Selenium::WebDriver::Options.chrome(exclude_switches: ["enable-automation"])
+options.add_argument("--start-maximized")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
+options.add_argument("–-disable-blink-features=AutomationControlled")
+options.add_argument("--disable-extensions")
+options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+options.add_preference "password_manager_enabled", false
 options.add_argument("--user-data-dir=/tmp/tarun_zorki_#{SecureRandom.uuid}")
 
 Capybara.register_driver :selenium_zorki do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
-  Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: options, http_client: client)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, http_client: client)
 end
 
 Capybara.threadsafe = true
@@ -27,7 +31,7 @@ Capybara.default_max_wait_time = 60
 Capybara.reuse_server = true
 
 module Zorki
-  class Scraper
+  class Scraper # rubocop:disable Metrics/ClassLength
     include Capybara::DSL
 
     @@logger = Logger.new(STDOUT)
@@ -42,8 +46,18 @@ module Zorki
     # Instagram uses GraphQL (like most of Facebook I think), and returns an object that actually
     # is used to seed the page. We can just parse this for most things.
     #
+    # additional_search_params is a comma seperated keys
+    # example: `data,xdt_api__v1__media__shortcode__web_info,items`
+    #
     # @returns Hash a ruby hash of the JSON data
-    def get_content_of_subpage_from_url(url, subpage_search)
+    def get_content_of_subpage_from_url(url, subpage_search, additional_search_parameters = nil)
+      # So this is fun:
+      # For pages marked as misinformation we have to use one method (interception of requrest) and
+      # for pages that are not, we can just pull the data straight from the page.
+      #
+      # How do we figure out which is which?... for now we'll just run through both and see where we
+      # go with it.
+
       # Our user data no longer lives in the graphql object passed initially with the page.
       # Instead it comes in as part of a subsequent call. This intercepts all calls, checks if it's
       # the one we want, and then moves on.
@@ -51,11 +65,29 @@ module Zorki
 
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
+        # puts "checking request: #{request.url}"
+
         continue.call(request) && next unless request.url.include?(subpage_search)
 
         continue.call(request) do |response|
           # Check if not a CORS prefetch and finish up if not
-          response_body = response.body if response.body.present?
+          if response.body.present?
+            check_passed = true
+
+            unless additional_search_parameters.nil?
+              body_to_check = Oj.load(response.body)
+
+              search_parameters = additional_search_parameters.split(",")
+              search_parameters.each_with_index do |key, index|
+                break if body_to_check.nil?
+
+                check_passed = false unless body_to_check.has_key?(key)
+                body_to_check = body_to_check[key]
+              end
+            end
+
+            response_body = response.body if check_passed == true
+          end
         end
       rescue Selenium::WebDriver::Error::WebDriverError
         # Eat them
@@ -65,12 +97,28 @@ module Zorki
       visit(url)
       # We wait until the correct intercept is processed or we've waited 60 seconds
       start_time = Time.now
+      # puts "Waiting.... #{url}"
+
+      sleep(rand(1...10))
       while response_body.nil? && (Time.now - start_time) < 60
         sleep(0.1)
       end
 
-      raise ContentUnavailableError if response_body.nil?
+      page.driver.execute_script("window.stop();")
 
+      # If this is a page that has not been marked as misinfo we can just pull the data
+      # TODO: put this before the whole load loop
+      if response_body.nil?
+        doc = Nokogiri::HTML(page.driver.browser.page_source)
+        elements = doc.search("script").find_all do |e|
+          e.attributes.has_key?("type") && e.attributes["type"].value == "application/ld+json"
+        end
+
+        raise ContentUnavailableError if elements&.empty?
+        return Oj.load(elements.first.text)
+      end
+
+      raise ContentUnavailableError if response_body.nil?
       Oj.load(response_body)
     end
 
@@ -80,17 +128,21 @@ module Zorki
     # Set the session to use a new user folder in the options!
     # #####################
     def reset_selenium
-      options = Selenium::WebDriver::Chrome::Options.new
-      options.add_argument("--window-size=1500,1500")
+      options = Selenium::WebDriver::Options.chrome(exclude_switches: ["enable-automation"])
+      options.add_argument("--start-maximized")
       options.add_argument("--no-sandbox")
       options.add_argument("--disable-dev-shm-usage")
-      options.add_argument("--user-data-dir=/tmp/tarun_#{SecureRandom.uuid}")
+      options.add_argument("–-disable-blink-features=AutomationControlled")
+      options.add_argument("--disable-extensions")
+      options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+      options.add_preference "password_manager_enabled", false
+      options.add_argument("--user-data-dir=/tmp/tarun_zorki_#{SecureRandom.uuid}")
       # options.add_argument("--user-data-dir=/tmp/tarun")
 
       Capybara.register_driver :selenium do |app|
         client = Selenium::WebDriver::Remote::Http::Default.new
         client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
-        Capybara::Selenium::Driver.new(app, browser: :chrome, url: "http://localhost:4444/wd/hub", capabilities: options, http_client: client)
+        Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, http_client: client)
       end
 
       Capybara.current_driver = :selenium

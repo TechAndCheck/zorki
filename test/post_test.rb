@@ -20,7 +20,7 @@ class PostTest < Minitest::Test
     post = Zorki::Post.lookup(["CNJJM2elXQ0"]).first
     assert_equal post.image_file_names.count, 3
     assert post.text.start_with? "Opening Day 2010"
-    assert_equal post.date.to_date, DateTime.parse("Apr 2, 2021")
+    assert_equal DateTime.parse("Apr 2, 2021").to_date, post.date.to_date
     assert post.number_of_likes > 1
     assert post.user.is_a?(Zorki::User)
     assert_equal post.user.username, "petesouza"
@@ -37,7 +37,7 @@ class PostTest < Minitest::Test
 
   def test_another_post_works
     post = Zorki::Post.lookup(["CmTc591tu0n"]).first
-    assert_not_nil post.video_file_name
+    assert_not_nil post.image_file_names
   end
 
   def test_a_video_post_returns_properly_when_scraped

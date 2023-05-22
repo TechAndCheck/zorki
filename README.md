@@ -24,7 +24,7 @@ Since this requires ARMHF support it's not through regular sources. However, the
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'zorki'
+gem "zorki"
 ```
 
 And then execute:
