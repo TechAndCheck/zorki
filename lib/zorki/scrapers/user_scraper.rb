@@ -20,23 +20,6 @@ module Zorki
 
       graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "?username=")
 
-# {"@context"=>"https://schema.org",
-#  "@type"=>"ProfilePage",
-#  "description"=>"founder",
-#  "author"=>
-#   {"@type"=>"Person",
-#    "identifier"=>{"@type"=>"http://schema.org/PropertyValue", "propertyID"=>"Username", "value"=>"therock"},
-#    "image"=>
-#     "https://scontent-lga3-2.cdninstagram.com/v/t51.2885-19/11850309_1674349799447611_206178162_a.jpg?stp=dst-jpg_s100x100&_nc_cat=1&ccb=1-7&_nc_sid=8ae9d6&_nc_ohc=Fu_smFNQ2A0AX-6pazq&_nc_ht=scontent-lga3-2.cdninstagram.com&oh=00_AfCvLCw6Xpt-lB4iZs-N1RilNF2BDuiT5nGcBOjZW-naaw&oe=648B85C4",
-#    "name"=>"Dwayne Johnson",
-#    "alternateName"=>"@therock",
-#    "sameAs"=>"https://linktr.ee/therock",
-#    "url"=>"https://www.instagram.com/therock"},
-#  "mainEntityOfPage"=>{"@type"=>"ProfilePage", "@id"=>"https://www.instagram.com/therock/"},
-#  "identifier"=>{"@type"=>"http://schema.org/PropertyValue", "propertyID"=>"Username", "value"=>"therock"},
-#  "interactionStatistic"=>
-#   [{"@type"=>"InteractionCounter", "interactionType"=>"https://schema.org/FilmAction", "userInteractionCount"=>"7271"},
-#    {"@type"=>"InteractionCounter", "interactionType"=>"http://schema.org/FollowAction", "userInteractionCount"=>"406332272"}]}
       if graphql_script.has_key?("author") && !graphql_script["author"].nil?
         user = graphql_script["author"]
 
