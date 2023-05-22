@@ -31,7 +31,7 @@ Capybara.default_max_wait_time = 60
 Capybara.reuse_server = true
 
 module Zorki
-  class Scraper
+  class Scraper # rubocop:disable Metrics/ClassLength
     include Capybara::DSL
 
     @@logger = Logger.new(STDOUT)
