@@ -153,7 +153,9 @@ module Zorki
       page.quit
 
       # Check if we're on a Instagram page already, if not visit it.
-      visit ("https://instagram.com") unless page.driver.browser.current_url.include? "instagram.com"
+      unless page.driver.browser.current_url.include? "instagram.com"
+        visit ("https://instagram.com")
+      end
 
       # We don't have to login if we already are
       begin
