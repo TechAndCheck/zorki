@@ -157,7 +157,14 @@ module Zorki
 
       # Check if we're on a Instagram page already, if not visit it.
       unless page.driver.browser.current_url.include? "instagram.com"
-        visit ("https://instagram.com")
+        # There seems to be a bug in the Linux ARM64 version of chromedriver where this will properly
+        # navigate but then timeout, crashing it all up. So instead we check and raise the error when
+        # that then fails again.
+        begin
+          visit ("https://instagram.com")
+        rescue Net::ReadTimeout => e
+          raise e unless page.driver.browser.current_url.include? "instagram.com"
+        end
       end
 
       # We don't have to login if we already are
