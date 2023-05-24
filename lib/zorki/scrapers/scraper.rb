@@ -16,6 +16,7 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("–-disable-blink-features=AutomationControlled")
 options.add_argument("--disable-extensions")
+options.add_argument("--enable-features=NetworkService,NetworkServiceInProcess")
 options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 options.add_preference "password_manager_enabled", false
 options.add_argument("--user-data-dir=/tmp/tarun_zorki_#{SecureRandom.uuid}")
@@ -134,6 +135,8 @@ module Zorki
       options.add_argument("--disable-dev-shm-usage")
       options.add_argument("–-disable-blink-features=AutomationControlled")
       options.add_argument("--disable-extensions")
+      options.add_argument("--enable-features=NetworkService,NetworkServiceInProcess")
+
       options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
       options.add_preference "password_manager_enabled", false
       options.add_argument("--user-data-dir=/tmp/tarun_zorki_#{SecureRandom.uuid}")
