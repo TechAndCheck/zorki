@@ -163,7 +163,13 @@ module Zorki
         begin
           visit ("https://instagram.com")
         rescue Net::ReadTimeout => e
-          raise e unless page.driver.browser.current_url.include? "instagram.com"
+          unless page.driver.browser.current_url.include? "instagram.com"
+            puts "-----------------------------------------"
+            puts "Failed to visit instgram"
+            puts "Was at #{page.driver.browser.current_url}"
+            puts "-----------------------------------------"
+            raise e
+          end
         end
       end
 
