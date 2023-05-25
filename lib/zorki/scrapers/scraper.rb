@@ -161,7 +161,7 @@ module Zorki
         # navigate but then timeout, crashing it all up. So instead we check and raise the error when
         # that then fails again.
         begin
-          visit ("https://instagram.com")
+          page.driver.navigate.to ("https://instagram.com")
         rescue Net::ReadTimeout => e
           # What happens if we just eat this?
 
