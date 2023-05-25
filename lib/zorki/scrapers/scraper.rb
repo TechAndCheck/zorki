@@ -162,13 +162,13 @@ module Zorki
         # that then fails again.
         begin
           visit ("https://instagram.com")
-        rescue Net::ReadTimeout => e
+        rescue Net::ReadTimeout
           unless page.driver.browser.current_url.include? "instagram.com"
-            puts "-----------------------------------------"
-            puts "Failed to visit instgram"
-            puts "Was at #{page.driver.browser.current_url}"
-            puts "-----------------------------------------"
-            raise e
+            @@logger.debug "-----------------------------------------"
+            @@logger.debug "Failed to visit instgram"
+            @@logger.debug "Was at #{page.driver.browser.current_url}"
+            @@logger.debug "-----------------------------------------"
+            raise "Failed at #{page.driver.browser.current_url}"
           end
         end
       end
