@@ -47,6 +47,11 @@ class PostTest < Minitest::Test
     assert_not_nil post.screenshot_file
   end
 
+  def test_a_video_post_properly_downloads_video
+    post = Zorki::Post.lookup(["Cak2RfYhqvE"]).first
+    assert !post.video_file_name.start_with?("https://")
+  end
+
   def test_a_post_has_been_removed
     assert_raises Zorki::ContentUnavailableError do
       Zorki::Post.lookup(["sfhslsfjdls"])

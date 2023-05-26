@@ -45,14 +45,16 @@ module Zorki
         end.first["userInteractionCount"]
 
         unless graphql_object["video"].empty?
-          video = graphql_object["video"].first["contentUrl"]
-          video_preview_image = graphql_object["video"].first["thumbnailUrl"]
+          video_url = graphql_object["video"].first["contentUrl"]
+          video = Zorki.retrieve_media(video_url)
+
+          video_preview_image_url = graphql_object["video"].first["thumbnailUrl"]
+          video_preview_image = Zorki.retrieve_media(video_preview_image_url)
         end
       else
         # We need to see if this is a single image post or a slideshow. We do that
         # by looking for a single image, if it's not there, we assume the alternative.
         graphql_object = graphql_object["data"]["xdt_api__v1__media__shortcode__web_info"]
-
 
         unless graphql_object["items"][0].has_key?("video_versions") && !graphql_object["items"][0]["video_versions"].nil?
           # Check if there is a slideshow or not
