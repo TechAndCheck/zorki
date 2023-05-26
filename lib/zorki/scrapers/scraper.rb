@@ -95,7 +95,7 @@ module Zorki
       end
 
       # Now that the intercept is set up, we visit the page we want
-      visit(url)
+      page.driver.browser.navigate.to(url)
       # We wait until the correct intercept is processed or we've waited 60 seconds
       start_time = Time.now
       # puts "Waiting.... #{url}"
@@ -160,19 +160,7 @@ module Zorki
         # There seems to be a bug in the Linux ARM64 version of chromedriver where this will properly
         # navigate but then timeout, crashing it all up. So instead we check and raise the error when
         # that then fails again.
-        begin
-          page.driver.navigate.to ("https://instagram.com")
-        rescue Net::ReadTimeout => e
-          # What happens if we just eat this?
-
-          # unless page.driver.browser.current_url.include? "instagram.com"
-            @@logger.error "-----------------------------------------"
-            @@logger.error "Failed to visit instgram"
-            @@logger.error "Was at #{page.driver.browser.current_url}"
-            @@logger.error "-----------------------------------------"
-          #   raise "Failed at #{page.driver.browser.current_url}"
-          # end
-        end
+        page.driver.browser.navigate.to("https://instagram.com")
       end
 
       # We don't have to login if we already are
