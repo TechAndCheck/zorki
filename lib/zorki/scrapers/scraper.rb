@@ -7,6 +7,7 @@ require "selenium-webdriver"
 require "logger"
 require "debug"
 require "securerandom"
+require "selenium/webdriver/remote/http/curb"
 
 # 2022-06-07 14:15:23 WARN Selenium [DEPRECATION] [:browser_options] :options as a parameter for driver initialization is deprecated. Use :capabilities with an Array of value capabilities/options if necessary instead.
 
@@ -22,8 +23,8 @@ options.add_preference "password_manager_enabled", false
 options.add_argument("--user-data-dir=/tmp/tarun_zorki_#{SecureRandom.uuid}")
 
 Capybara.register_driver :selenium_zorki do |app|
-  client = Selenium::WebDriver::Remote::Http::Default.new
-  client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
+  client = Selenium::WebDriver::Remote::Http::Curb.new
+  # client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, http_client: client)
 end
 
@@ -143,8 +144,8 @@ module Zorki
       # options.add_argument("--user-data-dir=/tmp/tarun")
 
       Capybara.register_driver :selenium do |app|
-        client = Selenium::WebDriver::Remote::Http::Default.new
-        client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
+        client = Selenium::WebDriver::Remote::Http::Curb.new
+        # client.read_timeout = 60  # Don't wait 60 seconds to return Net::ReadTimeoutError. We'll retry through Hypatia after 10 seconds
         Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, http_client: client)
       end
 

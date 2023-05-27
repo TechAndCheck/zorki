@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zorki (0.1.0)
+    zorki (0.1.1)
       apparition
       capybara
       oj
@@ -48,6 +48,7 @@ GEM
       xpath (~> 3.2)
     concurrent-ruby (1.2.2)
     crass (1.0.6)
+    curb (1.0.5)
     dotenv (2.7.6)
     erubi (1.12.0)
     ethon (0.16.0)
@@ -150,6 +151,7 @@ PLATFORMS
   arm64-darwin-22
 
 DEPENDENCIES
+  curb (~> 1.0, >= 1.0.5)
   dotenv (~> 2.7.6)
   minitest (~> 5.0)
   rake (~> 13.0)

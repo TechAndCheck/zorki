@@ -15,3 +15,5 @@ gem "rubocop-rails", "~> 2.19.1", require: false # Rails specific styles
 gem "rubocop-rails_config"
 
 gem "dotenv", "~> 2.7.6"
+
+gem "curb", "~> 1.0", ">= 1.0.5"
