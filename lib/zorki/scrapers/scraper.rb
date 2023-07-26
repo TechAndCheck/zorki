@@ -5,9 +5,9 @@ require "dotenv/load"
 require "oj"
 require "selenium-webdriver"
 require "logger"
-require "debug"
 require "securerandom"
 require "selenium/webdriver/remote/http/curb"
+require "debug"
 
 # 2022-06-07 14:15:23 WARN Selenium [DEPRECATION] [:browser_options] :options as a parameter for driver initialization is deprecated. Use :capabilities with an Array of value capabilities/options if necessary instead.
 
@@ -112,12 +112,27 @@ module Zorki
       # TODO: put this before the whole load loop
       if response_body.nil?
         doc = Nokogiri::HTML(page.driver.browser.page_source)
-        elements = doc.search("script").find_all do |e|
-          e.attributes.has_key?("type") && e.attributes["type"].value == "application/ld+json"
-        end
+        # elements = doc.search("script").find_all do |e|
+        #   e.attributes.has_key?("type") && e.attributes["type"].value == "application/ld+json"
+        # end
 
-        raise ContentUnavailableError if elements&.empty?
-        return Oj.load(elements.first.text)
+        elements = doc.search("script").map do |element|
+          element_json = nil
+          begin
+            element_json = JSON.parse(element)
+
+            element_json = element_json["require"].first.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
+          rescue StandardError => e
+            next
+          end
+
+          element_json
+        end.compact
+
+        if elements&.empty?
+          raise ContentUnavailableError
+        end
+        return elements
       end
 
       raise ContentUnavailableError if response_body.nil?

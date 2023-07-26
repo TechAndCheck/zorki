@@ -23,6 +23,8 @@ module Zorki
         "data,xdt_api__v1__media__shortcode__web_info,items"
       )
 
+      graphql_object = graphql_object.first if graphql_object.kind_of?(Array)
+
       # For pages that have been marked misinfo the structure is very different than not
       # If it is a clean post then it's just a schema.org thing, but if it's misinfo it's the old
       # way of deeply nested stuff.
@@ -54,7 +56,8 @@ module Zorki
       else
         # We need to see if this is a single image post or a slideshow. We do that
         # by looking for a single image, if it's not there, we assume the alternative.
-        graphql_object = graphql_object["data"]["xdt_api__v1__media__shortcode__web_info"]
+        # debugger
+        # graphql_object = graphql_object["data"]["xdt_api__v1__media__shortcode__web_info"]
 
         unless graphql_object["items"][0].has_key?("video_versions") && !graphql_object["items"][0]["video_versions"].nil?
           # Check if there is a slideshow or not
