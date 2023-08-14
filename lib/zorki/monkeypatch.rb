@@ -40,7 +40,9 @@ module SeleniumMonkeypatch
       data = { method: method, params: params.compact }
       data[:sessionId] = @session_id if @session_id
       message = @ws.send_cmd(**data)
-      raise Error::WebDriverError, error_message(message["error"]) if message["error"] && (method != "Fetch.continueRequest")
+      if message.nil? == false && message["error"] && (method != "Fetch.continueRequest")
+        raise Error::WebDriverError, error_message(message["error"])
+      end
 
       message
     end
