@@ -17,3 +17,4 @@ gem "rubocop-rails_config"
 gem "dotenv", "~> 2.7.6"
 
 gem "curb", "~> 1.0", ">= 1.0.5"
+gem "rack", "3.0.8"

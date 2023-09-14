@@ -68,14 +68,12 @@ module Zorki
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
         # puts "checking request: #{request.url}"
-
         continue.call(request) && next unless request.url.include?(subpage_search)
 
         continue.call(request) do |response|
           # Check if not a CORS prefetch and finish up if not
-          if response.body.present?
+          if !response.body.empty? && response.body
             check_passed = true
-
             unless additional_search_parameters.nil?
               body_to_check = Oj.load(response.body)
 
@@ -117,7 +115,7 @@ module Zorki
         # end
 
         elements = doc.search("script").map do |element|
-          element_json = nil
+            element_json = nil
           begin
             element_json = JSON.parse(element)
 
