@@ -120,8 +120,7 @@ module Zorki
             element_json = JSON.parse(element)
 
             parsed_element_json = element_json["require"].first.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
-          rescue StandardError => e
-            # debugger
+          rescue StandardError
             next
           end
 
@@ -130,12 +129,13 @@ module Zorki
         end
 
         if elements&.empty?
-          raise ContentUnavailableError
+          raise ContentUnavailableError("Response body nil") if response_body.nil?
+          raise ContentUnavailableError(elements.inspect)
         end
         return elements
       end
 
-      raise ContentUnavailableError if response_body.nil?
+      raise ContentUnavailableError("Response body nil") if response_body.nil?
       Oj.load(response_body)
     end
 

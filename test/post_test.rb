@@ -66,7 +66,7 @@ class PostTest < Minitest::Test
   end
 
   def test_a_post_still_works
-    post = Zorki::Post.lookup(["CZu6b08OB0Q"]).first
+    post = Zorki::Post.lookup(["CvzTrIagwK2"]).first
     assert_not_nil post.image_file_names
     assert_not_nil post.screenshot_file
   end
