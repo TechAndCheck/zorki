@@ -124,7 +124,6 @@ module Zorki
             next
           end
 
-
           parsed_element_json
         end
 
@@ -138,7 +137,7 @@ module Zorki
       raise ContentUnavailableError.new("Response body nil") if response_body.nil?
       Oj.load(response_body)
     ensure
-      # page.quit
+      page.quit
       # TRY THIS TO MAKE SURE CHROME GETS CLOSED?
       # We may also want to not do this and make sure the same browser is reused instead for cookie purposes
     end
@@ -173,7 +172,7 @@ module Zorki
 
     def login
       # Reset the sessions so that there's nothing laying around
-      page.quit
+      # page.driver.browser.close
 
       # Check if we're on a Instagram page already, if not visit it.
       unless page.driver.browser.current_url.include? "instagram.com"
@@ -248,6 +247,15 @@ module Zorki
       # Multiply everything and insure we get an integer back
       (number * multiplier).to_i
     end
+
+    # def reset_window
+    #   old_handle = page.driver.browser.window_handle
+    #   page.driver.browser.switch_to.new_window(:window)
+    #   new_handle = page.driver.browser.window_handle
+    #   page.driver.browser.switch_to.window(old_handle)
+    #   page.driver.browser.close
+    #   page.driver.browser.switch_to.window(new_handle)
+    # end
   end
 end
 
