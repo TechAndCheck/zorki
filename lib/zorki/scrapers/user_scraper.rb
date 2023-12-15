@@ -21,6 +21,10 @@ module Zorki
       graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "?username=")
       graphql_script = graphql_script.first if graphql_script.class == Array
 
+      if graphql_script.nil?
+        graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "web_profile_info")
+      end
+
       if graphql_script.has_key?("author") && !graphql_script["author"].nil?
         user = graphql_script["author"]
 
