@@ -114,18 +114,20 @@ module Zorki
         #   e.attributes.has_key?("type") && e.attributes["type"].value == "application/ld+json"
         # end
 
-        elements = doc.search("script").map do |element|
-            element_json = nil
+        elements = doc.search("script").filter_map do |element|
+          parsed_element_json = nil
           begin
             element_json = JSON.parse(element)
 
-            element_json = element_json["require"].first.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
+            parsed_element_json = element_json["require"].first.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
           rescue StandardError => e
+            # debugger
             next
           end
 
-          element_json
-        end.compact
+
+          parsed_element_json
+        end
 
         if elements&.empty?
           raise ContentUnavailableError

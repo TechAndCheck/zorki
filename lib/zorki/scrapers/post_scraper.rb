@@ -23,6 +23,7 @@ module Zorki
         "data,xdt_api__v1__media__shortcode__web_info,items"
       )
 
+      debugger
       graphql_object = graphql_object.first if graphql_object.kind_of?(Array)
 
       # For pages that have been marked misinfo the structure is very different than not
