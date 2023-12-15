@@ -129,14 +129,18 @@ module Zorki
         end
 
         if elements&.empty?
-          raise ContentUnavailableError("Response body nil") if response_body.nil?
-          raise ContentUnavailableError(elements.inspect)
+          raise ContentUnavailableError.new("Response body nil") if response_body.nil?
+          raise ContentUnavailableError.new(elements.inspect)
         end
         return elements
       end
 
-      raise ContentUnavailableError("Response body nil") if response_body.nil?
+      raise ContentUnavailableError.new("Response body nil") if response_body.nil?
       Oj.load(response_body)
+    ensure
+      # page.quit
+      # TRY THIS TO MAKE SURE CHROME GETS CLOSED?
+      # We may also want to not do this and make sure the same browser is reused instead for cookie purposes
     end
 
   private
