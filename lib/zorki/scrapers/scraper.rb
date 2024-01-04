@@ -117,7 +117,7 @@ module Zorki
         elements = doc.search("script").filter_map do |element|
           parsed_element_json = nil
           begin
-            element_json = JSON.parse(element)
+            element_json = JSON.parse(element.text)
 
             parsed_element_json = element_json["require"].first.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
           rescue StandardError
@@ -128,9 +128,11 @@ module Zorki
         end
 
         if elements&.empty?
+          debugger
           raise ContentUnavailableError.new("Cannot find anything", additional_data: { page_source: page.driver.browser.page_source })
         end
 
+        debugger
         return elements
       end
 
