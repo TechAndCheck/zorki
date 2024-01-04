@@ -128,9 +128,9 @@ module Zorki
         end
 
         if elements&.empty?
-          raise ContentUnavailableError.new("Response body nil") if response_body.nil?
-          raise ContentUnavailableError.new(elements.inspect)
+          raise ContentUnavailableError.new("Cannot find anything", additional_data: { elements: elements.inspect })
         end
+
         return elements
       end
 

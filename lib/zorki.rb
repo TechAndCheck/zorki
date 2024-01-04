@@ -20,8 +20,15 @@ module Zorki
   end
 
   class ContentUnavailableError < Error
-    def initialize(msg = "Zorki could not find content requested")
-      super
+    attr_reader :additional_data
+
+    def initialize(msg = "Zorki could not find content requested", additional_data: {})
+      super(msg)
+      @additional_data = additional_data
+    end
+
+    def to_honeybadger_context
+      additional_data
     end
   end
 

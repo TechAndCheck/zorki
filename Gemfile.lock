@@ -59,6 +59,9 @@ GEM
     connection_pool (2.4.1)
     crass (1.0.6)
     curb (1.0.5)
+    debug (1.8.0)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     dotenv (2.7.6)
     drb (2.1.1)
       ruby2_keywords
@@ -189,6 +192,7 @@ PLATFORMS
 
 DEPENDENCIES
   curb (~> 1.0, >= 1.0.5)
+  debug
   dotenv (~> 2.7.6)
   minitest (~> 5.0)
   rack (= 3.0.8)
