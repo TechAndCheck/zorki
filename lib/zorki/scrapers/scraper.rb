@@ -128,11 +128,9 @@ module Zorki
         end
 
         if elements&.empty?
-          debugger
           raise ContentUnavailableError.new("Cannot find anything", additional_data: { page_source: page.driver.browser.page_source })
         end
 
-        debugger
         return elements
       end
 
