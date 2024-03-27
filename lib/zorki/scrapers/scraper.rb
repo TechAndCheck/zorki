@@ -128,7 +128,7 @@ module Zorki
         end
 
         if elements&.empty?
-          raise ContentUnavailableError.new("Cannot find anything", additional_data: { page_source: page.driver.browser.page_source })
+          raise ContentUnavailableError.new("Cannot find anything", additional_data: { page_source: page.driver.browser.page_source, elements: elements })
         end
 
         return elements
