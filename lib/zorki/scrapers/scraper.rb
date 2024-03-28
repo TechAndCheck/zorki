@@ -171,6 +171,7 @@ module Zorki
     end
 
     def login
+      puts "Attempting to login..."
       # Reset the sessions so that there's nothing laying around
       # page.driver.browser.close
 
@@ -193,16 +194,20 @@ module Zorki
       # Try to log in
       loop_count = 0
       while loop_count < 5 do
+        puts "Attempting to fill login field ##{loop_count}"
+
         fill_in("username", with: ENV["INSTAGRAM_USER_NAME"])
         fill_in("password", with: ENV["INSTAGRAM_PASSWORD"])
 
         begin
-          click_button("Log in", exact_text: true) # Note: "Log in" (lowercase `in`) instead redirects to Facebook's login page
+          find_button("Log in").click() # Note: "Log in" (lowercase `in`) should be exact instead, it redirects to Facebook's login page
         rescue Capybara::ElementNotFound; end # If we can't find it don't break horribly, just keep waiting
 
-        break unless has_css?('p[data-testid="login-error-message"', wait: 10)
+        break unless has_css?('p[data-testid="login-error-message"', wait: 3)
         loop_count += 1
-        sleep(rand * 10.3)
+        random_length = rand(1...2)
+        puts "Sleeping for #{random_length} seconds"
+        sleep(random_length)
       end
 
       # Sometimes Instagram just... doesn't let you log in
@@ -210,7 +215,9 @@ module Zorki
 
       # No we don't want to save our login credentials
       begin
-        click_on("Save Info")
+        puts "Checking and clearing Save Info button..."
+
+        find_button("Save Info").click()
       rescue Capybara::ElementNotFound; end
     end
 
