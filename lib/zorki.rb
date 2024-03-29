@@ -64,8 +64,6 @@ module Zorki
       return temp_file_name if File.size(temp_file_name) > 100
 
       # Delete the file since we want to retry
-      debugger
-
       File.delete(temp_file_name)
       count += 1
     end

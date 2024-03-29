@@ -14,7 +14,6 @@ module Zorki
           result = attempt_parse(id)
           break
         rescue ImageRequestZeroSize
-          debugger
           # If the image is zero size, we retry
           puts "Zero sized image found, retrying #{count}"
           count += 1
