@@ -46,11 +46,34 @@ module Zorki
     end
   end
 
+  class ImageRequestZeroSize < RetryableError; end
+
   define_setting :temp_storage_location, "tmp/zorki"
 
   # Get an image from a URL and save to a temp folder set in the configuration under
   # temp_storage_location
+
+  # We do this because sometimes the images are coming back sized zero
   def self.retrieve_media(url)
+    count = 0
+
+    until count == 5
+      temp_file_name = attempt_retrieve_media(url)
+
+      # If it's more than 1kb return properly
+      return temp_file_name if File.size(temp_file_name) > 100
+
+      # Delete the file since we want to retry
+      debugger
+
+      File.delete(temp_file_name)
+      count += 1
+    end
+
+    raise(ImageRequestZeroSize)
+  end
+
+  def self.attempt_retrieve_media(url)
     response = Typhoeus.get(url)
 
     # Get the file extension if it's in the file
@@ -69,6 +92,7 @@ module Zorki
     # We do this in case the folder isn't created yet, since it's a temp folder we'll just do so
     self.create_temp_storage_location
     File.binwrite(temp_file_name, response.body)
+
     temp_file_name
   end
 

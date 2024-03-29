@@ -5,6 +5,28 @@ require "typhoeus"
 module Zorki
   class PostScraper < Scraper
     def parse(id)
+      count = 0
+
+      until count == 2
+        puts "Retrieving ID #{id}"
+
+        begin
+          result = attempt_parse(id)
+          break
+        rescue ImageRequestZeroSize
+          debugger
+          # If the image is zero size, we retry
+          puts "Zero sized image found, retrying #{count}"
+          count += 1
+        end
+      end
+
+      raise ImageRequestZeroSize if count == 5
+
+      result
+    end
+
+    def attempt_parse(id)
       # Stuff we need to get from the DOM (implemented is starred):
       # - User *
       # - Text *

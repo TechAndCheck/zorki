@@ -13,7 +13,7 @@ class PostTest < Minitest::Test
   # We're using Pete Souza because Obama's former photographer isn't likely to be taken down
   def test_a_single_image_post_returns_properly_when_scraped
     post = Zorki::Post.lookup(["COOCAfCFpkP"]).first
-    assert_equal post.image_file_names.count, 1
+    assert_equal 1, post.image_file_names.count
   end
 
   def test_a_slideshow_post_returns_properly_when_scraped

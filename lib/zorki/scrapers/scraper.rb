@@ -172,6 +172,7 @@ module Zorki
 
     def login
       puts "Attempting to login..."
+
       # Reset the sessions so that there's nothing laying around
       # page.driver.browser.close
 
@@ -185,7 +186,10 @@ module Zorki
 
       # We don't have to login if we already are
       begin
-        return if find_field("Search", wait: 10).present?
+        if find_field("Search", wait: 10).present?
+          puts "Already logged in"
+          return
+        end
       rescue Capybara::ElementNotFound; end
 
       # Check if we're redirected to a login page, if we aren't we're already logged in
@@ -213,9 +217,10 @@ module Zorki
       # Sometimes Instagram just... doesn't let you log in
       raise "Instagram not accessible" if loop_count == 5
 
+      puts "Login successful"
       # No we don't want to save our login credentials
       begin
-        puts "Checking and clearing Save Info button..."
+        puts "Checking and clearing Save Info button"
 
         find_button("Save Info").click()
       rescue Capybara::ElementNotFound; end
