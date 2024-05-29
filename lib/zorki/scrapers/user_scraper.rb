@@ -18,7 +18,7 @@ module Zorki
       # - *Profile image
       login
 
-      graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "?username=")
+      graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql", "data,user,full_name")
       graphql_script = graphql_script.first if graphql_script.class == Array
 
       if graphql_script.nil?
@@ -62,13 +62,13 @@ module Zorki
         scraped_username = user["username"]
         raise Zorki::Error unless username == scraped_username
 
-        profile_image_url = user["profile_pic_url_hd"]
+        profile_image_url = user["hd_profile_pic_url_info"]["url"]
         {
           name: user["full_name"],
           username: username,
-          number_of_posts: user["edge_owner_to_timeline_media"]["count"],
-          number_of_followers: user["edge_followed_by"]["count"],
-          number_of_following: user["edge_follow"]["count"],
+          number_of_posts: user["media_count"],
+          number_of_followers: user["follower_count"],
+          number_of_following: user["following_count"],
           verified: user["is_verified"],
           profile: user["biography"],
           profile_link: user["external_url"],

@@ -72,8 +72,9 @@ module Zorki
 
         continue.call(request) do |response|
           # Check if not a CORS prefetch and finish up if not
-          if !response.body.empty? && response.body
+          if !response.body&.empty? && response.body
             check_passed = true
+
             unless additional_search_parameters.nil?
               body_to_check = Oj.load(response.body)
 
@@ -119,7 +120,16 @@ module Zorki
           begin
             element_json = JSON.parse(element.text)
 
-            parsed_element_json = element_json["require"].first.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
+            if element.text.include?("Dwayne")
+              # if element_json["require"].first.last.first["__bbox"].key?("require")
+
+              #   element_json["require"].first.last.first["__bbox"]["require"].each do |x|
+              #     debugger if x.to_s.include?("Dwayne Johnson")
+              #   end
+              # end
+            end
+
+            parsed_element_json = element_json["require"].last.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
           rescue StandardError
             next
           end
@@ -137,9 +147,10 @@ module Zorki
       raise ContentUnavailableError.new("Response body nil") if response_body.nil?
       Oj.load(response_body)
     ensure
-      page.quit
+      # page.quit
       # TRY THIS TO MAKE SURE CHROME GETS CLOSED?
       # We may also want to not do this and make sure the same browser is reused instead for cookie purposes
+      # NOW wer'e trying this 2024-05-28
     end
 
   private

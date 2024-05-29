@@ -23,6 +23,9 @@ module Zorki
       raise ImageRequestZeroSize if count == 5
 
       result
+    ensure
+      page.quit
+      # Make sure it's quit? I'm not sure we really want to do this outside of testing.
     end
 
     def attempt_parse(id)
@@ -44,6 +47,7 @@ module Zorki
         "data,xdt_api__v1__media__shortcode__web_info,items"
       )
 
+
       graphql_object = graphql_object.first if graphql_object.kind_of?(Array)
 
       # For pages that have been marked misinfo the structure is very different than not
@@ -61,6 +65,7 @@ module Zorki
         text = graphql_object["articleBody"]
         username = graphql_object["author"]["identifier"]["value"]
         # 2021-04-01T17:07:10-07:00
+
         date = DateTime.strptime(graphql_object["dateCreated"], "%Y-%m-%dT%H:%M:%S%z")
         interactions = graphql_object["interactionStatistic"]
         number_of_likes = interactions.select do |x|
