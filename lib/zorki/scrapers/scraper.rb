@@ -78,6 +78,8 @@ module Zorki
             unless additional_search_parameters.nil?
               body_to_check = Oj.load(response.body)
 
+              debugger if body_to_check.include?("jokoy.komi.io")
+
               search_parameters = additional_search_parameters.split(",")
               search_parameters.each_with_index do |key, index|
                 break if body_to_check.nil?
@@ -120,11 +122,12 @@ module Zorki
           begin
             element_json = JSON.parse(element.text)
 
-            if element.text.include?("Dwayne")
+            if element.text.include?("jokoy.komi.io")
+              debugger
               # if element_json["require"].first.last.first["__bbox"].key?("require")
 
               #   element_json["require"].first.last.first["__bbox"]["require"].each do |x|
-              #     debugger if x.to_s.include?("Dwayne Johnson")
+              #     debugger if x.to_s.include?("Si mulut pelaut")
               #   end
               # end
             end

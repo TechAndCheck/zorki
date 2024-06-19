@@ -32,6 +32,17 @@ module Zorki
     end
   end
 
+  class UserScrapingError < Error
+    def initialize(msg = "Zorki encountered an error scraping a user", additional_data: {})
+      super(msg)
+      @additional_data = additional_data
+    end
+
+    def to_honeybadger_context
+      additional_data
+    end
+  end
+
   class RetryableError < Error; end
 
   class ImageRequestTimedOutError < RetryableError

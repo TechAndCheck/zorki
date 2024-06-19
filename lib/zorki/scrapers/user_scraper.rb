@@ -76,6 +76,8 @@ module Zorki
           profile_image_url: profile_image_url
         }
       end
+    rescue Zorki::ContentUnavailableError
+      raise Zorki::UserScrapingError.new("Zorki could not find user #{username}", additional_data: { username: username })
     end
   end
 end
