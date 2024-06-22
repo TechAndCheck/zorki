@@ -28,7 +28,7 @@ module Zorki
     end
 
     def to_honeybadger_context
-      additional_data
+      @additional_data
     end
   end
 
@@ -39,7 +39,7 @@ module Zorki
     end
 
     def to_honeybadger_context
-      additional_data
+      @additional_data
     end
   end
 
