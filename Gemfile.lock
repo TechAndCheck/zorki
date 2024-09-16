@@ -1,12 +1,12 @@
 PATH
   remote: .
   specs:
-    zorki (0.1.24)
+    zorki (0.1.25)
       apparition
       capybara
       oj
       selenium-devtools
-      selenium-webdriver (~> 4.19)
+      selenium-webdriver (~> 4.24.0)
       typhoeus
 
 GEM
