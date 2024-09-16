@@ -16,13 +16,30 @@ module Zorki
       #   - *description
       #   - *links
       # - *Profile image
-      login
 
-      graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql", "data,user,full_name")
-      graphql_script = graphql_script.first if graphql_script.class == Array
+      graphql_script = nil
+      count = 0
+      loop do
+        raise Zorki::UserScrapingError.new("Zorki could not find user #{username}", additional_data: { username: username }) if count > 3
 
-      if graphql_script.nil?
-        graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "web_profile_info")
+        print "Scraping user #{username}... (attempt #{count + 1})\n"
+        begin
+          login
+
+          graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql", "data,user,media_count")
+          graphql_script = graphql_script.first if graphql_script.class == Array
+
+          if graphql_script.nil?
+            graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "web_profile_info")
+          end
+        rescue Zorki::ContentUnavailableError => e
+          count += 1
+          page.driver.browser.navigate.to("https://www.instagram.com") # we want to go back to the main page so we start from scratch
+          sleep 10
+          next
+        end
+
+        break
       end
 
       if graphql_script.has_key?("author") && !graphql_script["author"].nil?
@@ -36,9 +53,13 @@ module Zorki
           ["https://schema.org/FilmAction", "http://schema.org/WriteAction"].include?(stat["interactionType"])
         end.first
 
+        # number_of_posts = graphql_script["data"]["user"]["media_count"] if number_of_posts.nil?
+
         number_of_followers = graphql_script["interactionStatistic"].select do |stat|
           stat["interactionType"] == "http://schema.org/FollowAction"
         end.first
+
+        # number_of_followers = graphql_script["data"]["user"]["follower_count"] if number_of_followers.nil?
 
         begin
           profile_image_url = user["image"]
@@ -76,7 +97,8 @@ module Zorki
           profile_image_url: profile_image_url
         }
       end
-    rescue Zorki::ContentUnavailableError
+    rescue Zorki::ContentUnavailableError => e
+      debugger
       raise Zorki::UserScrapingError.new("Zorki could not find user #{username}", additional_data: { username: username })
     end
   end

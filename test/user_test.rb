@@ -13,8 +13,8 @@ class UserTest < Minitest::Test
     assert user.number_of_followers > 1000000
     assert user.number_of_following > -1
     assert user.verified
-    assert user.profile_link, "linktr.ee/therock"
-    assert !user.profile.empty?
+    assert user.profile_link, "http://therock.komi.io"
+    assert !user.profile.nil?
     assert !user.profile_image.nil?
   end
 

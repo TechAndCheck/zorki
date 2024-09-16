@@ -141,12 +141,14 @@ module Zorki
         end
 
         if elements&.empty?
+          # debugger
           raise ContentUnavailableError.new("Cannot find anything", additional_data: { page_source: page.driver.browser.page_source, elements: elements })
         end
 
         return elements
       end
 
+      # debugger if response_body.nil?
       raise ContentUnavailableError.new("Response body nil") if response_body.nil?
       Oj.load(response_body)
     ensure
