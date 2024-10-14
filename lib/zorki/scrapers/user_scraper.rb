@@ -20,13 +20,11 @@ module Zorki
       graphql_script = nil
       count = 0
       loop do
-        raise Zorki::UserScrapingError.new("Zorki could not find user #{username}", additional_data: { username: username }) if count > 3
-
         print "Scraping user #{username}... (attempt #{count + 1})\n"
         begin
           login
 
-          graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql", "data,user,media_count")
+          graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,media_count", post_data_include: "render_surface")
           graphql_script = graphql_script.first if graphql_script.class == Array
 
           if graphql_script.nil?
@@ -34,8 +32,13 @@ module Zorki
           end
         rescue Zorki::ContentUnavailableError => e
           count += 1
+
+          if count > 3
+            raise Zorki::UserScrapingError.new("Zorki could not find user #{username}", additional_data: { username: username })
+          end
+
           page.driver.browser.navigate.to("https://www.instagram.com") # we want to go back to the main page so we start from scratch
-          sleep 10
+          sleep rand(5..10)
           next
         end
 

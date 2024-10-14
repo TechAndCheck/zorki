@@ -51,8 +51,13 @@ module Zorki
     # additional_search_params is a comma seperated keys
     # example: `data,xdt_api__v1__media__shortcode__web_info,items`
     #
+    # NOTE: `post_data_include` if not nil overrules the additional_search_parameters
+    # This is so that i didn't have to refactor the entire code base when I added it.
+    # Eventually it might be better to look at the post request and see if we can do the
+    # same type of search there as we use for users and simplify this whole thing a lot.
+    #
     # @returns Hash a ruby hash of the JSON data
-    def get_content_of_subpage_from_url(url, subpage_search, additional_search_parameters = nil)
+    def get_content_of_subpage_from_url(url, subpage_search, additional_search_parameters = nil, post_data_include: nil)
       # So this is fun:
       # For pages marked as misinformation we have to use one method (interception of requrest) and
       # for pages that are not, we can just pull the data straight from the page.
@@ -65,20 +70,27 @@ module Zorki
       # the one we want, and then moves on.
       response_body = nil
 
+      responses = []
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
-        # puts "checking request: #{request.url}"
+        #
+        # responses.first.post_data.include?("render_surface%22%3A%22PROFILE")
         continue.call(request) && next unless request.url.include?(subpage_search)
+        continue.call(request) && next unless !post_data_include.nil? && request.post_data.include?(post_data_include)
 
         continue.call(request) do |response|
+          puts "***********************************************************"
+          puts "checking request: #{request.url}"
+          puts response.body
+          puts "***********************************************************"
+
+          # responses << response
           # Check if not a CORS prefetch and finish up if not
           if !response.body&.empty? && response.body
             check_passed = true
 
-            unless additional_search_parameters.nil?
+            if !additional_search_parameters.nil? && post_data_include.nil?
               body_to_check = Oj.load(response.body)
-
-              debugger if body_to_check.include?("jokoy.komi.io")
 
               search_parameters = additional_search_parameters.split(",")
               search_parameters.each_with_index do |key, index|
@@ -87,6 +99,13 @@ module Zorki
                 check_passed = false unless body_to_check.has_key?(key)
                 body_to_check = body_to_check[key]
               end
+            end
+
+            if check_passed == false
+              puts "***********************************************************"
+              puts "checking FAILED request: #{request.url}"
+              puts response.body
+              puts "***********************************************************"
             end
 
             response_body = response.body if check_passed == true
@@ -120,17 +139,17 @@ module Zorki
         elements = doc.search("script").filter_map do |element|
           parsed_element_json = nil
           begin
-            element_json = JSON.parse(element.text)
+            element_json = OJ.load(element.text)
 
-            if element.text.include?("jokoy.komi.io")
-              debugger
+            # if element.text.include?("jokoy.komi.io")
+              # debugger
               # if element_json["require"].first.last.first["__bbox"].key?("require")
 
               #   element_json["require"].first.last.first["__bbox"]["require"].each do |x|
               #     debugger if x.to_s.include?("Si mulut pelaut")
               #   end
               # end
-            end
+            # end
 
             parsed_element_json = element_json["require"].last.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
           rescue StandardError

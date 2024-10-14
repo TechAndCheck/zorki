@@ -25,4 +25,8 @@ class UserTest < Minitest::Test
   def test_another_2
     user = Zorki::User.lookup(["chefaz"]).first
   end
+
+  def test_another_3
+    user = Zorki::User.lookup(["theonion"]).first
+  end
 end
