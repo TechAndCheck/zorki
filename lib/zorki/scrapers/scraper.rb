@@ -72,8 +72,6 @@ module Zorki
 
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
-        #
-        # responses.first.post_data.include?("render_surface%22%3A%22PROFILE")
         continue.call(request) && next unless request.url.include?(subpage_search)
         continue.call(request) && next unless !post_data_include.nil? && request.post_data&.include?(post_data_include)
 

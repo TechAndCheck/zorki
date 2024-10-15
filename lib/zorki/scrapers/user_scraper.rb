@@ -24,7 +24,9 @@ module Zorki
         begin
           login
 
-          graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,media_count", post_data_include: "render_surface")
+          # This is searching for a specific request, the reason it's weird is because it's uri encoded
+          # graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,media_count", post_data_include: "render_surface%22%3A%22PROFILE")
+          graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", nil, post_data_include: "render_surface%22%3A%22PROFILE")
           graphql_script = graphql_script.first if graphql_script.class == Array
 
           if graphql_script.nil?
