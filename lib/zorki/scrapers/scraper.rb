@@ -70,13 +70,12 @@ module Zorki
       # the one we want, and then moves on.
       response_body = nil
 
-      responses = []
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
         #
         # responses.first.post_data.include?("render_surface%22%3A%22PROFILE")
         continue.call(request) && next unless request.url.include?(subpage_search)
-        continue.call(request) && next unless !post_data_include.nil? && request.post_data.include?(post_data_include)
+        continue.call(request) && next unless !post_data_include.nil? && request.post_data&.include?(post_data_include)
 
         continue.call(request) do |response|
           puts "***********************************************************"
@@ -113,6 +112,10 @@ module Zorki
         end
       rescue Selenium::WebDriver::Error::WebDriverError
         # Eat them
+      rescue StandardError => e
+        puts "***********************************************************"
+        puts "Error in intercept: #{e}"
+        puts "***********************************************************"
       end
 
       # Now that the intercept is set up, we visit the page we want
@@ -131,6 +134,7 @@ module Zorki
       # If this is a page that has not been marked as misinfo we can just pull the data
       # TODO: put this before the whole load loop
       if response_body.nil?
+
         doc = Nokogiri::HTML(page.driver.browser.page_source)
         # elements = doc.search("script").find_all do |e|
         #   e.attributes.has_key?("type") && e.attributes["type"].value == "application/ld+json"
@@ -142,13 +146,13 @@ module Zorki
             element_json = OJ.load(element.text)
 
             # if element.text.include?("jokoy.komi.io")
-              # debugger
-              # if element_json["require"].first.last.first["__bbox"].key?("require")
+            # debugger
+            # if element_json["require"].first.last.first["__bbox"].key?("require")
 
-              #   element_json["require"].first.last.first["__bbox"]["require"].each do |x|
-              #     debugger if x.to_s.include?("Si mulut pelaut")
-              #   end
-              # end
+            #   element_json["require"].first.last.first["__bbox"]["require"].each do |x|
+            #     debugger if x.to_s.include?("Si mulut pelaut")
+            #   end
+            # end
             # end
 
             parsed_element_json = element_json["require"].last.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]

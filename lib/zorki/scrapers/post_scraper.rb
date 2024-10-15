@@ -40,6 +40,9 @@ module Zorki
       Capybara.app_host = "https://instagram.com"
 
       # video slideshows https://www.instagram.com/p/CY7KxwYOFBS/?utm_source=ig_embed&utm_campaign=loading
+      #
+      # TODO: Check if post is available publically before trying to login
+      # Should help with the scraping
       login
       graphql_object = get_content_of_subpage_from_url(
         "https://www.instagram.com/p/#{id}/",
@@ -149,6 +152,7 @@ module Zorki
       end
 
       # Take the screenshot and return it
+      # rubocop:disable Link/Debugger
       save_screenshot("#{Zorki.temp_storage_location}/instagram_screenshot_#{SecureRandom.uuid}.png")
     end
   end

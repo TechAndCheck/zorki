@@ -30,7 +30,7 @@ module Zorki
           if graphql_script.nil?
             graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "web_profile_info")
           end
-        rescue Zorki::ContentUnavailableError => e
+        rescue Zorki::ContentUnavailableError
           count += 1
 
           if count > 3
@@ -100,8 +100,7 @@ module Zorki
           profile_image_url: profile_image_url
         }
       end
-    rescue Zorki::ContentUnavailableError => e
-      debugger
+    rescue Zorki::ContentUnavailableError
       raise Zorki::UserScrapingError.new("Zorki could not find user #{username}", additional_data: { username: username })
     end
   end
