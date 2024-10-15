@@ -81,7 +81,6 @@ module Zorki
           puts response.body
           puts "***********************************************************"
 
-          # responses << response
           # Check if not a CORS prefetch and finish up if not
           if !response.body&.empty? && response.body
             check_passed = true
@@ -103,6 +102,7 @@ module Zorki
               puts "checking FAILED request: #{request.url}"
               puts response.body
               puts "***********************************************************"
+              next
             end
 
             response_body = response.body if check_passed == true
@@ -110,10 +110,10 @@ module Zorki
         end
       rescue Selenium::WebDriver::Error::WebDriverError
         # Eat them
-      rescue StandardError => e
-        puts "***********************************************************"
-        puts "Error in intercept: #{e}"
-        puts "***********************************************************"
+        # rescue StandardError => e
+        # puts "***********************************************************"
+        # puts "Error in intercept: #{e}"
+        # puts "***********************************************************"
       end
 
       # Now that the intercept is set up, we visit the page we want
@@ -132,7 +132,6 @@ module Zorki
       # If this is a page that has not been marked as misinfo we can just pull the data
       # TODO: put this before the whole load loop
       if response_body.nil?
-
         doc = Nokogiri::HTML(page.driver.browser.page_source)
         # elements = doc.search("script").find_all do |e|
         #   e.attributes.has_key?("type") && e.attributes["type"].value == "application/ld+json"
@@ -141,7 +140,7 @@ module Zorki
         elements = doc.search("script").filter_map do |element|
           parsed_element_json = nil
           begin
-            element_json = OJ.load(element.text)
+            element_json = Oj.load(element.text)
 
             # if element.text.include?("jokoy.komi.io")
             # debugger
@@ -155,6 +154,10 @@ module Zorki
 
             parsed_element_json = element_json["require"].last.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
           rescue StandardError
+            # puts "***********************************************************"
+            # puts "Error in parsing JSON: #{e}"
+            # puts e.backtrace
+            # puts "***********************************************************"
             next
           end
 
