@@ -165,12 +165,14 @@ module Zorki
             images << Zorki.retrieve_media(object["display_resources"].last["src"])
           end
         end
+
+        user = User.from_post_data(object["owner"])
       end
 
       screenshot_file = take_screenshot()
 
       # This has to run last since it switches pages
-      user = User.lookup([username]).first
+      user = User.lookup([username]).first if defined?(user).nil?
 
       {
         images: images,
