@@ -76,11 +76,6 @@ module Zorki
         continue.call(request) && next unless !post_data_include.nil? && request.post_data&.include?(post_data_include)
 
         continue.call(request) do |response|
-          puts "***********************************************************"
-          puts "checking request: #{request.url}"
-          puts response.body
-          puts "***********************************************************"
-
           # Check if not a CORS prefetch and finish up if not
           if !response.body&.empty? && response.body
             check_passed = true
@@ -97,23 +92,16 @@ module Zorki
               end
             end
 
-            if check_passed == false
-              puts "***********************************************************"
-              puts "checking FAILED request: #{request.url}"
-              puts response.body
-              puts "***********************************************************"
-              next
-            end
-
+            next if check_passed == false
             response_body = response.body if check_passed == true
           end
         end
       rescue Selenium::WebDriver::Error::WebDriverError
         # Eat them
-        # rescue StandardError => e
-        # puts "***********************************************************"
-        # puts "Error in intercept: #{e}"
-        # puts "***********************************************************"
+      rescue StandardError => e
+        puts "***********************************************************"
+        puts "Error in intercept: #{e}"
+        puts "***********************************************************"
       end
 
       # Now that the intercept is set up, we visit the page we want
@@ -141,23 +129,8 @@ module Zorki
           parsed_element_json = nil
           begin
             element_json = Oj.load(element.text)
-
-            # if element.text.include?("jokoy.komi.io")
-            # debugger
-            # if element_json["require"].first.last.first["__bbox"].key?("require")
-
-            #   element_json["require"].first.last.first["__bbox"]["require"].each do |x|
-            #     debugger if x.to_s.include?("Si mulut pelaut")
-            #   end
-            # end
-            # end
-
             parsed_element_json = element_json["require"].last.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
           rescue StandardError
-            # puts "***********************************************************"
-            # puts "Error in parsing JSON: #{e}"
-            # puts e.backtrace
-            # puts "***********************************************************"
             next
           end
 
@@ -165,14 +138,12 @@ module Zorki
         end
 
         if elements&.empty?
-          # debugger
           raise ContentUnavailableError.new("Cannot find anything", additional_data: { page_source: page.driver.browser.page_source, elements: elements })
         end
 
         return elements
       end
 
-      # debugger if response_body.nil?
       raise ContentUnavailableError.new("Response body nil") if response_body.nil?
       Oj.load(response_body)
     ensure

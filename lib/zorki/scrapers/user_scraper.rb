@@ -22,7 +22,7 @@ module Zorki
       loop do
         print "Scraping user #{username}... (attempt #{count + 1})\n"
         begin
-          login
+          # login
 
           # This is searching for a specific request, the reason it's weird is because it's uri encoded
           # graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,media_count", post_data_include: "render_surface%22%3A%22PROFILE")

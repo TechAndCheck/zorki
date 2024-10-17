@@ -3,7 +3,7 @@
 require "test_helper"
 
 class PostTest < Minitest::Test
-  i_suck_and_my_tests_are_order_dependent!()
+  # i_suck_and_my_tests_are_order_dependent!()
 
   def teardown
     cleanup_temp_folder
