@@ -38,6 +38,7 @@ class PostTest < Minitest::Test
   def test_another_post_works
     post = Zorki::Post.lookup(["CmTc591tu0n"]).first
     assert_not_nil post.image_file_names
+    assert_not_nil post.user
   end
 
   def test_a_video_post_returns_properly_when_scraped
@@ -45,6 +46,7 @@ class PostTest < Minitest::Test
     assert_not_nil post.video_file_name
     assert_not_nil post.video_preview_image
     assert_not_nil post.screenshot_file
+    assert_not_nil post.user
   end
 
   def test_another_video_post_returns_properly_when_scraped
@@ -52,11 +54,13 @@ class PostTest < Minitest::Test
     assert_not_nil post.video_file_name
     assert_not_nil post.video_preview_image
     assert_not_nil post.screenshot_file
+    assert_not_nil post.user
   end
 
   def test_a_video_post_properly_downloads_video
     post = Zorki::Post.lookup(["Cak2RfYhqvE"]).first
     assert !post.video_file_name.start_with?("https://")
+    assert_not_nil post.user
   end
 
   def test_a_post_has_been_removed
@@ -76,6 +80,7 @@ class PostTest < Minitest::Test
     post = Zorki::Post.lookup(["C5BV8kuMJm4"]).first
     assert_not_nil post.image_file_names
     assert_not_nil post.screenshot_file
+    assert_not_nil post.user
   end
 
   def test_running_two_scrapes_works # Seriously, this is breaking, not sure why
@@ -83,10 +88,12 @@ class PostTest < Minitest::Test
     assert_not_nil post.video_file_name
     post = Zorki::Post.lookup(["Cak2RfYhqvE"]).first
     assert_not_nil post.video_file_name
+    assert_not_nil post.user
   end
 
   def test_another_link
-    post = Zorki::Post.lookup(["C7UoDRKukTg"]).first
+    post = Zorki::Post.lookup(["C1nPLjNrxct"]).first
     assert_not_nil post.image_file_names
+    assert_not_nil post.user
   end
 end

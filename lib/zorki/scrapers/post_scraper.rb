@@ -135,9 +135,21 @@ module Zorki
         # Go through the entire JSON structure (below for now) and make sure it hits all the points
 
         object = graphql_object["data"]["xdt_shortcode_media"]
-        date = object["edge_media_to_caption"]["edges"].first["node"]["created_at"]
+
+        begin
+          date = object["edge_media_to_caption"]["edges"].first["node"]["created_at"]
+        rescue StandardError
+          date = object["taken_at_timestamp"].to_s
+        end
+
         date = DateTime.strptime(date, "%s")
-        text = object["edge_media_to_caption"]["edges"].first["node"]["text"]
+
+        begin
+          text = object["edge_media_to_caption"]["edges"].first["node"]["text"]
+        rescue StandardError
+          text = ""
+        end
+
         number_of_likes = object["edge_media_preview_like"]["count"]
         username = object["owner"]["username"]
         id = object["shortcode"]
