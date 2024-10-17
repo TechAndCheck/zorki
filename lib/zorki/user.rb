@@ -37,9 +37,9 @@ module Zorki
         username: data["username"],
         number_of_posts: data["edge_owner_to_timeline_media"]["count"],
         number_of_followers: data["edge_followed_by"]["count"],
-        number_of_following: nil,
+        number_of_following: 0,
         verified: data["is_verified"],
-        profile: nil,
+        profile: "",
         profile_link: "https://www.instagram.com/#{data["username"]}",
         profile_image: Zorki.retrieve_media(data["profile_pic_url"]),
         profile_image_url: data["profile_pic_url"]
