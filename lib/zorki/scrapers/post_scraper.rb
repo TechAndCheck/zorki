@@ -171,7 +171,7 @@ module Zorki
           end
         elsif object.has_key?("display_resources")
           if object["is_video"] == true
-            video = Zorki.retrieve_media(object["display_resources"].last["src"])
+            video = Zorki.retrieve_media(object["video_url"])
             video_preview_image = Zorki.retrieve_media(object["display_url"])
           else
             images << Zorki.retrieve_media(object["display_resources"].last["src"])

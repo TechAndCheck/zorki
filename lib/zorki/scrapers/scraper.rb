@@ -57,7 +57,7 @@ module Zorki
     # same type of search there as we use for users and simplify this whole thing a lot.
     #
     # @returns Hash a ruby hash of the JSON data
-    def get_content_of_subpage_from_url(url, subpage_search, additional_search_parameters = nil, post_data_include: nil)
+    def get_content_of_subpage_from_url(url, subpage_search, additional_search_parameters = nil, post_data_include: nil, header: nil)
       # So this is fun:
       # For pages marked as misinformation we have to use one method (interception of requrest) and
       # for pages that are not, we can just pull the data straight from the page.
@@ -73,24 +73,21 @@ module Zorki
       page.driver.browser.intercept do |request, &continue|
         # This passes the request forward unmodified, since we only care about the response
         continue.call(request) && next unless request.url.include?(subpage_search)
-        continue.call(request) && next unless !post_data_include.nil? && request.post_data&.include?(post_data_include)
+        if !header.nil?
+          header_key = header.keys.first.to_s
+          header_value = header.values.first
+
+          puts "Request Header included? #{request.headers.include?(header_key)} #{request.headers[header_key]} == #{header_value}"
+          continue.call(request) && next unless request.headers.include?(header_key) && request.headers[header_key] == header_value
+
+        elsif !post_data_include.nil?
+          continue.call(request) && next unless request.post_data&.include?(post_data_include)
+        end
 
         continue.call(request) do |response|
           # Check if not a CORS prefetch and finish up if not
           if !response.body&.empty? && response.body
             check_passed = true
-
-            if !additional_search_parameters.nil? && post_data_include.nil?
-              body_to_check = Oj.load(response.body)
-
-              search_parameters = additional_search_parameters.split(",")
-              search_parameters.each_with_index do |key, index|
-                break if body_to_check.nil?
-
-                check_passed = false unless body_to_check.has_key?(key)
-                body_to_check = body_to_check[key]
-              end
-            end
 
             next if check_passed == false
             response_body = response.body if check_passed == true
@@ -108,42 +105,17 @@ module Zorki
       page.driver.browser.navigate.to(url)
       # We wait until the correct intercept is processed or we've waited 60 seconds
       start_time = Time.now
-      # puts "Waiting.... #{url}"
-
-      sleep(rand(1...10))
       while response_body.nil? && (Time.now - start_time) < 60
         sleep(0.1)
       end
 
       page.driver.execute_script("window.stop();")
 
-      # If this is a page that has not been marked as misinfo we can just pull the data
-      # TODO: put this before the whole load loop
-      if response_body.nil?
-        doc = Nokogiri::HTML(page.driver.browser.page_source)
-        # elements = doc.search("script").find_all do |e|
-        #   e.attributes.has_key?("type") && e.attributes["type"].value == "application/ld+json"
-        # end
+      # 1. Fix the ability to dettect if a page is removed -DONE
+      # 2. Fix videos for slideshows - Works for reels?
+      # 3. Public liinks
 
-        elements = doc.search("script").filter_map do |element|
-          parsed_element_json = nil
-          begin
-            element_json = Oj.load(element.text)
-            parsed_element_json = element_json["require"].last.last.first["__bbox"]["require"].first.last.last["__bbox"]["result"]["data"]["xdt_api__v1__media__shortcode__web_info"]
-          rescue StandardError
-            next
-          end
-
-          parsed_element_json
-        end
-
-        if elements&.empty?
-          raise ContentUnavailableError.new("Cannot find anything", additional_data: { page_source: page.driver.browser.page_source, elements: elements })
-        end
-
-        return elements
-      end
-
+      # Check if something failed before we continue. Use the fake test to test
       raise ContentUnavailableError.new("Response body nil") if response_body.nil?
       Oj.load(response_body)
     ensure

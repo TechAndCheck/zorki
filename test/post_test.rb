@@ -49,17 +49,22 @@ class PostTest < Minitest::Test
     assert_not_nil post.user
   end
 
-  def test_another_video_post_returns_properly_when_scraped
-    post = Zorki::Post.lookup(["Czblz-nNx-B"]).first
+  def test_a_reel_post_returns_properly_when_scraped
+    post = Zorki::Post.lookup(["DAZC1_rMRfR"]).first
     assert_not_nil post.video_file_name
     assert_not_nil post.video_preview_image
     assert_not_nil post.screenshot_file
     assert_not_nil post.user
+
+    assert post.video_file_name.end_with?(".mp4")
+    assert post.video_preview_image.end_with?(".jpg")
   end
 
   def test_a_video_post_properly_downloads_video
     post = Zorki::Post.lookup(["Cak2RfYhqvE"]).first
     assert !post.video_file_name.start_with?("https://")
+    assert File.exist?(post.video_file_name)
+    assert post.video_file_name.end_with?(".mp4")
     assert_not_nil post.user
   end
 
@@ -67,13 +72,6 @@ class PostTest < Minitest::Test
     assert_raises Zorki::ContentUnavailableError do
       Zorki::Post.lookup(["sfhslsfjdls"])
     end
-  end
-
-  def test_a_removed_post_has_correct_additional_info
-    Zorki::Post.lookup(["sfhslsfjdls"])
-  rescue Zorki::ContentUnavailableError => e
-    assert e.additional_data.key?(:elements)
-    assert_not_nil e.additional_data[:elements]
   end
 
   def test_a_post_still_works
@@ -92,8 +90,13 @@ class PostTest < Minitest::Test
   end
 
   def test_another_link
-    post = Zorki::Post.lookup(["C1nPLjNrxct"]).first
+    post = Zorki::Post.lookup(["C1p3LKJxfch"]).first
     assert_not_nil post.image_file_names
     assert_not_nil post.user
+  end
+
+  def test_another_video
+    post = Zorki::Post.lookup(["DBNBV8iuMEx"]).first
+    assert_not_nil post.video_file_name
   end
 end
