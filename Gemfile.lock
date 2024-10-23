@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zorki (0.1.26)
+    zorki (0.2.6)
       apparition
       capybara
       oj
@@ -87,7 +87,7 @@ GEM
     regexp_parser (2.9.2)
     reline (0.5.10)
       io-console (~> 0.5)
-    rexml (3.3.7)
+    rexml (3.3.8)
     rubocop (1.66.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -125,7 +125,7 @@ GEM
     ruby-progressbar (1.13.0)
     rubyzip (2.3.2)
     securerandom (0.3.1)
-    selenium-devtools (0.128.0)
+    selenium-devtools (0.129.0)
       selenium-webdriver (~> 4.2)
     selenium-webdriver (4.24.0)
       base64 (~> 0.2)

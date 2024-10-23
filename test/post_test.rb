@@ -96,7 +96,13 @@ class PostTest < Minitest::Test
   end
 
   def test_another_video
-    post = Zorki::Post.lookup(["DBNBV8iuMEx"]).first
+    post = Zorki::Post.lookup(["DBKb3qdMEwm"]).first
     assert_not_nil post.video_file_name
+    assert_not_nil post.video_preview_image
+    assert_not_nil post.screenshot_file
+    assert_not_nil post.user
+
+    assert post.video_file_name.end_with?(".mp4")
+    assert post.video_preview_image.end_with?(".jpg")
   end
 end
