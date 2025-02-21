@@ -156,7 +156,8 @@ module Zorki
 
     def check_for_login
       return true if page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button')
-      true if page.has_xpath?('//*[@type="password"]')
+      return true if page.has_xpath?('//*[@type="password"]')
+      false
     end
 
     def login
