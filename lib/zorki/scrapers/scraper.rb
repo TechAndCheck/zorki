@@ -77,7 +77,7 @@ module Zorki
           header_key = header.keys.first.to_s
           header_value = header.values.first
 
-          puts "Request Header included? #{request.headers.include?(header_key)} #{request.headers[header_key]} == #{header_value}"
+          # puts "Request Header included? #{request.headers.include?(header_key)} #{request.headers[header_key]} == #{header_value}"
           continue.call(request) && next unless request.headers.include?(header_key) && request.headers[header_key] == header_value
 
         elsif !post_data_include.nil?
@@ -117,6 +117,7 @@ module Zorki
 
       # Check if something failed before we continue. Use the fake test to test
       raise ContentUnavailableError.new("Response body nil") if response_body.nil?
+
       Oj.load(response_body)
     ensure
       # page.quit
@@ -153,6 +154,11 @@ module Zorki
       Capybara.current_driver = :selenium
     end
 
+    def check_for_login
+      return true if page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button')
+      true if page.has_xpath?('//*[@type="password"]')
+    end
+
     def login
       puts "Attempting to login..."
 
@@ -176,14 +182,21 @@ module Zorki
       rescue Capybara::ElementNotFound; end
 
       # Check if we're redirected to a login page, if we aren't we're already logged in
-      return unless page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button')
+      return unless check_for_login
 
       # Try to log in
       loop_count = 0
       while loop_count < 5 do
         puts "Attempting to fill login field ##{loop_count}"
 
-        fill_in("username", with: ENV["INSTAGRAM_USER_NAME"])
+        if page.has_xpath?('//*[@name="username"]')
+          fill_in("username", with: ENV["INSTAGRAM_USER_NAME"])
+        elsif page.has_xpath?('//*[@name="email"]')
+          fill_in("email", with: ENV["INSTAGRAM_USER_NAME"])
+        else
+          raise "Couldn't find username field"
+        end
+
         fill_in("password", with: ENV["INSTAGRAM_PASSWORD"])
 
         begin
