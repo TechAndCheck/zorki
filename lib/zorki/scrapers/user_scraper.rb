@@ -22,16 +22,20 @@ module Zorki
       loop do
         print "Scraping user #{username}... (attempt #{count + 1})\n"
         begin
-
-
           # This is searching for a specific request, the reason it's weird is because it's uri encoded
           # graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,media_count", post_data_include: "render_surface%22%3A%22PROFILE")
-          graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", nil, post_data_include: "render_surface%22%3A%22PROFILE", header: { "X-FB-Friendly-Name": "PolarisProfilePageContentQuery" })
+          # Logged in is different than logged out
+          begin
+            graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", nil, post_data_include: "render_surface%22%3A%22PROFILE", header: { "X-FB-Friendly-Name": "PolarisProfilePageContentQuery" })
+          rescue Zorki::ContentUnavailableError
+            graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,friendship_count")
+          end
+
           graphql_script = graphql_script.first if graphql_script.class == Array
 
-          if graphql_script.nil?
-            graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "web_profile_info")
-          end
+          # if graphql_script.nil?
+          #   graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "web_profile_info")
+          # end
         rescue Zorki::ContentUnavailableError
           count += 1
           login && next if check_for_login
@@ -42,7 +46,7 @@ module Zorki
             login
           end
 
-          page.driver.browser.navigate.to("https://www.instagram.com") # we want to go back to the main page so we start from scratch
+          # page.driver.browser.navigate.to("https://www.instagram.com") # we want to go back to the main page so we start from scratch
           sleep rand(5..10)
           next
         end
@@ -85,7 +89,9 @@ module Zorki
           }
         end
       else
-        user = graphql_script["data"]["user"]
+        begin
+          user = graphql_script["data"]["user"]
+        rescue StandardError; end
 
         # Get the username (to verify we're on the right page here)
         scraped_username = user["username"]

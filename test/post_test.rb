@@ -105,4 +105,15 @@ class PostTest < Minitest::Test
     assert post.video_file_name.end_with?(".mp4")
     assert post.video_preview_image.end_with?(".jpg")
   end
+
+  def test_another_video_2
+    post = Zorki::Post.lookup(["DGhXRPpTCwy"]).first
+    assert_not_nil post.video_file_name
+    assert_not_nil post.video_preview_image
+    assert_not_nil post.screenshot_file
+    assert_not_nil post.user
+
+    assert post.video_file_name.end_with?(".mp4")
+    assert post.video_preview_image.end_with?(".jpg")
+  end
 end

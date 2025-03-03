@@ -82,6 +82,11 @@ module Zorki
 
         elsif !post_data_include.nil?
           continue.call(request) && next unless request.post_data&.include?(post_data_include)
+          begin
+            JSON.parse(request.post_data)
+          rescue JSON::ParserError
+            continue.call(request) && next
+          end
         end
 
         continue.call(request) do |response|
@@ -155,29 +160,37 @@ module Zorki
     end
 
     def check_for_login
-      return true if page.has_xpath?('//*[@id="loginForm"]/div/div[3]/button')
-      return true if page.has_xpath?('//*[@type="password"]')
+      xpath_login = '//form[@id="loginForm"]/div/div[3]/button | //input[@type="password"]'
+      return true if page.has_xpath?(xpath_login, wait: 2)
+      # Occasionally we'll be on a weird page instead of login, so we'll click the login button
+      begin
+        login_button = page.all(:xpath, "//div[text()='Log in'] | //a[text()='Log In']", wait: 2).last
+        login_button.click unless login_button.nil?
+
+        sleep(5)
+        return true if page.has_xpath?(xpath_login, wait: 2)
+      rescue Capybara::ElementNotFound; end
       false
     end
 
-    def login
-      puts "Attempting to login..."
-
+    def login(url = "https://instagram.com")
+      load_saved_cookies
       # Reset the sessions so that there's nothing laying around
       # page.driver.browser.close
 
       # Check if we're on a Instagram page already, if not visit it.
+
+      page.driver.browser.navigate.to(url)
       unless page.driver.browser.current_url.include? "instagram.com"
         # There seems to be a bug in the Linux ARM64 version of chromedriver where this will properly
         # navigate but then timeout, crashing it all up. So instead we check and raise the error when
         # that then fails again.
-        page.driver.browser.navigate.to("https://instagram.com")
+        # page.driver.browser.navigate.to("https://instagram.com")
       end
 
       # We don't have to login if we already are
       begin
-        if find_field("Search", wait: 10).present?
-          puts "Already logged in"
+        unless page.find(:xpath, "//span[text()='Profile']", wait: 2).nil?
           return
         end
       rescue Capybara::ElementNotFound; end
@@ -204,7 +217,10 @@ module Zorki
           find_button("Log in").click() # Note: "Log in" (lowercase `in`) should be exact instead, it redirects to Facebook's login page
         rescue Capybara::ElementNotFound; end # If we can't find it don't break horribly, just keep waiting
 
-        break unless has_css?('p[data-testid="login-error-message"', wait: 3)
+        unless has_css?('p[data-testid="login-error-message"', wait: 3)
+          save_cookies
+          break
+        end
         loop_count += 1
         random_length = rand(1...2)
         puts "Sleeping for #{random_length} seconds"
@@ -214,12 +230,10 @@ module Zorki
       # Sometimes Instagram just... doesn't let you log in
       raise "Instagram not accessible" if loop_count == 5
 
-      puts "Login successful"
       # No we don't want to save our login credentials
       begin
         puts "Checking and clearing Save Info button"
-
-        find_button("Save Info").click()
+        find_button("Save Info", wait: 2).click()
       rescue Capybara::ElementNotFound; end
     end
 
@@ -265,6 +279,26 @@ module Zorki
     #   page.driver.browser.close
     #   page.driver.browser.switch_to.window(new_handle)
     # end
+
+    def save_cookies
+      cookies_json = page.driver.browser.manage.all_cookies.to_json
+      File.write("./zorki_cookies.json", cookies_json)
+    end
+
+    def load_saved_cookies
+      return unless File.exist?("./zorki_cookies.json")
+      page.driver.browser.navigate.to("https://instagram.com")
+
+      cookies_json = File.read("./zorki_cookies.json")
+      cookies = JSON.parse(cookies_json, symbolize_names: true)
+      cookies.each do |cookie|
+        cookie[:expires] = Time.parse(cookie[:expires]) unless cookie[:expires].nil?
+        begin
+          page.driver.browser.manage.add_cookie(cookie)
+        rescue StandardError
+        end
+      end
+    end
   end
 end
 

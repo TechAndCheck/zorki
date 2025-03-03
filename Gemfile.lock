@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zorki (0.2.9)
+    zorki (0.2.10)
       apparition
       capybara
       oj
