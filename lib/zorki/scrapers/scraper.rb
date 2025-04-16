@@ -93,6 +93,18 @@ module Zorki
           # Check if not a CORS prefetch and finish up if not
           if !response.body&.empty? && response.body
             check_passed = true
+            unless additional_search_parameters.nil?
+              puts "checking additional search parameters #{additional_search_parameters}"
+              body_to_check = Oj.load(response.body)
+
+              search_parameters = additional_search_parameters.split(",")
+              search_parameters.each_with_index do |key, index|
+                break if body_to_check.nil?
+
+                check_passed = false unless body_to_check.has_key?(key)
+                body_to_check = body_to_check[key]
+              end
+            end
 
             next if check_passed == false
             response_body = response.body if check_passed == true

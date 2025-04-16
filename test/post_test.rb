@@ -116,4 +116,12 @@ class PostTest < Minitest::Test
     assert post.video_file_name.end_with?(".mp4")
     assert post.video_preview_image.end_with?(".jpg")
   end
+
+  def test_a_video_post_properly_downloads_video_2
+    post = Zorki::Post.lookup(["DGSMxWYPvvN"]).first
+    assert !post.video_file_name.start_with?("https://")
+    assert File.exist?(post.video_file_name)
+    assert post.video_file_name.end_with?(".mp4")
+    assert_not_nil post.user
+  end
 end

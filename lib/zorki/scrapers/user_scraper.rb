@@ -20,16 +20,25 @@ module Zorki
       graphql_script = nil
       count = 0
       loop do
+        login
         print "Scraping user #{username}... (attempt #{count + 1})\n"
         begin
           # This is searching for a specific request, the reason it's weird is because it's uri encoded
           # graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,media_count", post_data_include: "render_surface%22%3A%22PROFILE")
           # Logged in is different than logged out
           begin
-            graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", nil, post_data_include: "render_surface%22%3A%22PROFILE", header: { "X-FB-Friendly-Name": "PolarisProfilePageContentQuery" })
+            graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,follower_count")
           rescue Zorki::ContentUnavailableError
-            graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,friendship_count")
+            begin
+              graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", "data,user,friendship_count")
+            rescue Zorki::ContentUnavailableError
+              graphql_script = get_content_of_subpage_from_url("https://instagram.com/#{username}/", "graphql/query", nil, post_data_include: "render_surface%22%3A%22PROFILE", header: { "X-FB-Friendly-Name": "PolarisProfilePageContentQuery" })
+            end
           end
+
+
+          # TODO This is broken apparenlty sometimes
+          # debugger if graphql_script.to_s.include?("highlights")
 
           graphql_script = graphql_script.first if graphql_script.class == Array
 
@@ -38,7 +47,6 @@ module Zorki
           # end
         rescue Zorki::ContentUnavailableError
           count += 1
-          login && next if check_for_login
 
           if count > 4
             raise Zorki::UserScrapingError.new("Zorki could not find user #{username}", additional_data: { username: username })
@@ -91,7 +99,8 @@ module Zorki
       else
         begin
           user = graphql_script["data"]["user"]
-        rescue StandardError; end
+        rescue StandardError
+        end
 
         # Get the username (to verify we're on the right page here)
         scraped_username = user["username"]
